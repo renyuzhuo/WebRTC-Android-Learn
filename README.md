@@ -10,16 +10,6 @@ commit [9881cb2](https://chromium.googlesource.com/external/webrtc/+/9881cb28747
 
 [Blog](https://github.com/RWebRTC/Blog/issues?q=is%3Aissue+is%3Aopen+label%3AWebRTC)
 
-## Others
-
-### Problems
-
-在[这里](https://github.com/RWebRTC/WebRTC-Learn/issues)讨论。
-
-### Directories
-
-APK:[AppRTCDemo.apk](./AppRTCDemo.apk)编译结束可以运行。
-
 ## License
 
 You can do whatever you want with this code.

@@ -1,0 +1,8 @@
+RAppRTC/*.iml
+RAppRTC/.gradle
+RAppRTC/local.properties
+RAppRTC/.idea/workspace.xml
+RAppRTC/.idea/libraries
+RAppRTC/.DS_Store
+RAppRTC/build
+RAppRTC/captures
