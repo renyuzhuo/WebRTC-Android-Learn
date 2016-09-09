@@ -37,4 +37,5 @@ dependencies {
     compile files('libs/autobanh.jar')
     compile files('libs/libjingle_peerconnection_java.jar')
     compile files('libs/base_java.jar')
+    compile files('libs/RALib.jar')
 }
