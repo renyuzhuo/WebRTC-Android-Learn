@@ -13,37 +13,57 @@ package org.appspot.apprtc.util;
 import android.os.Build;
 import android.util.Log;
 
+import cn.renyuzhuo.rlib.rlog;
+
 /**
  * AppRTCUtils provides helper functions for managing thread safety.
  */
 public final class AppRTCUtils {
 
-  private AppRTCUtils() {
-  }
-
-  /** Helper method which throws an exception  when an assertion has failed. */
-  public static void assertIsTrue(boolean condition) {
-    if (!condition) {
-      throw new AssertionError("Expected condition to be true");
+    private AppRTCUtils() {
     }
-  }
 
-  /** Helper method for building a string of thread information.*/
-  public static String getThreadInfo() {
-    return "@[name=" + Thread.currentThread().getName()
-        + ", id=" + Thread.currentThread().getId() + "]";
-  }
+    /**
+     * Helper method which throws an exception  when an assertion has failed.
+     */
+    public static void assertIsTrue(boolean condition) {
+        if (!condition) {
+            rlog.d("抛出异常：AppRTCUtils");
+            throw new AssertionError("Expected condition to be true");
+        }
+    }
 
-  /** Information about the current build, taken from system properties. */
-  public static void logDeviceInfo(String tag) {
-    Log.d(tag, "Android SDK: " + Build.VERSION.SDK_INT + ", "
-        + "Release: " + Build.VERSION.RELEASE + ", "
-        + "Brand: " + Build.BRAND + ", "
-        + "Device: " + Build.DEVICE + ", "
-        + "Id: " + Build.ID + ", "
-        + "Hardware: " + Build.HARDWARE + ", "
-        + "Manufacturer: " + Build.MANUFACTURER + ", "
-        + "Model: " + Build.MODEL + ", "
-        + "Product: " + Build.PRODUCT);
-  }
+    /**
+     * Helper method for building a string of thread information.
+     */
+    public static String getThreadInfo() {
+        rlog.d("线程信息：" + "@[name=" + Thread.currentThread().getName()
+                + ", id=" + Thread.currentThread().getId() + "]");
+        return "@[name=" + Thread.currentThread().getName()
+                + ", id=" + Thread.currentThread().getId() + "]";
+    }
+
+    /**
+     * Information about the current build, taken from system properties.
+     */
+    public static void logDeviceInfo(String tag) {
+        rlog.d("系统相关信息：" + "Android SDK: " + Build.VERSION.SDK_INT + ", "
+                + "Release: " + Build.VERSION.RELEASE + ", "
+                + "Brand: " + Build.BRAND + ", "
+                + "Device: " + Build.DEVICE + ", "
+                + "Id: " + Build.ID + ", "
+                + "Hardware: " + Build.HARDWARE + ", "
+                + "Manufacturer: " + Build.MANUFACTURER + ", "
+                + "Model: " + Build.MODEL + ", "
+                + "Product: " + Build.PRODUCT);
+        Log.d(tag, "Android SDK: " + Build.VERSION.SDK_INT + ", "
+                + "Release: " + Build.VERSION.RELEASE + ", "
+                + "Brand: " + Build.BRAND + ", "
+                + "Device: " + Build.DEVICE + ", "
+                + "Id: " + Build.ID + ", "
+                + "Hardware: " + Build.HARDWARE + ", "
+                + "Manufacturer: " + Build.MANUFACTURER + ", "
+                + "Model: " + Build.MODEL + ", "
+                + "Product: " + Build.PRODUCT);
+    }
 }
