@@ -785,11 +785,11 @@ public class CallActivity extends Activity
 
     @Override
     public void onPeerConnectionStatsReady(final StatsReport[] reports) {
-        rlog.d("连接状态状态准备好了");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (!isError && iceConnected) {
+                    rlog.i("连接状态准备好了");
                     hudFragment.updateEncoderStatistics(reports);
                 }
             }

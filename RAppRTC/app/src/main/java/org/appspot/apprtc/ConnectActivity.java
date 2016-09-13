@@ -42,6 +42,7 @@ import java.util.Random;
 
 import cn.renyuzhuo.rlib.NumUtil;
 import cn.renyuzhuo.rlib.rlog;
+import cn.renyuzhuo.rlib.rlog.DEBUG_LEVEL;
 
 /**
  * Handles the initial setup where the user selects which room to join.
@@ -90,6 +91,7 @@ public class ConnectActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         rlog.setTAG("rlog.RAppRTC:" + NumUtil.getRandomNum(100));
+        rlog.setDebugLever(DEBUG_LEVEL.debug);
 
         rlog.d("进入应用");
 
