@@ -13,6 +13,7 @@ package org.appspot.apprtc;
 import org.appspot.apprtc.util.AppRTCUtils;
 
 import android.content.Context;
+import android.gesture.GestureOverlayView;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -21,6 +22,8 @@ import android.os.Build;
 import android.util.Log;
 
 import org.webrtc.ThreadUtils;
+
+import cn.renyuzhuo.rlib.rlog;
 
 /**
  * AppRTCProximitySensor manages functions related to the proximity sensor in
@@ -32,141 +35,160 @@ import org.webrtc.ThreadUtils;
  * Anything less than the threshold value and the sensor  returns "NEAR".
  */
 public class AppRTCProximitySensor implements SensorEventListener {
-  private static final String TAG = "AppRTCProximitySensor";
+    private static final String TAG = "AppRTCProximitySensor";
 
-  // This class should be created, started and stopped on one thread
-  // (e.g. the main thread). We use |nonThreadSafe| to ensure that this is
-  // the case. Only active when |DEBUG| is set to true.
-  private final ThreadUtils.ThreadChecker threadChecker = new ThreadUtils.ThreadChecker();
+    // This class should be created, started and stopped on one thread
+    // (e.g. the main thread). We use |nonThreadSafe| to ensure that this is
+    // the case. Only active when |DEBUG| is set to true.
+    private final ThreadUtils.ThreadChecker threadChecker = new ThreadUtils.ThreadChecker();
 
-  private final Runnable onSensorStateListener;
-  private final SensorManager sensorManager;
-  private Sensor proximitySensor = null;
-  private boolean lastStateReportIsNear = false;
+    private final Runnable onSensorStateListener;
+    private final SensorManager sensorManager;
+    private Sensor proximitySensor = null;
+    private boolean lastStateReportIsNear = false;
 
-  /** Construction */
-  static AppRTCProximitySensor create(Context context,
-      Runnable sensorStateListener) {
-    return new AppRTCProximitySensor(context, sensorStateListener);
-  }
-
-  private AppRTCProximitySensor(Context context, Runnable sensorStateListener) {
-    Log.d(TAG, "AppRTCProximitySensor" + AppRTCUtils.getThreadInfo());
-    onSensorStateListener = sensorStateListener;
-    sensorManager = ((SensorManager) context.getSystemService(
-        Context.SENSOR_SERVICE));
-  }
-
-  /**
-   * Activate the proximity sensor. Also do initialization if called for the
-   * first time.
-   */
-  public boolean start() {
-    threadChecker.checkIsOnValidThread();
-    Log.d(TAG, "start" + AppRTCUtils.getThreadInfo());
-    if (!initDefaultSensor()) {
-      // Proximity sensor is not supported on this device.
-      return false;
-    }
-    sensorManager.registerListener(
-        this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-    return true;
-  }
-
-  /** Deactivate the proximity sensor. */
-  public void stop() {
-    threadChecker.checkIsOnValidThread();
-    Log.d(TAG, "stop" + AppRTCUtils.getThreadInfo());
-    if (proximitySensor == null) {
-      return;
-    }
-    sensorManager.unregisterListener(this, proximitySensor);
-  }
-
-  /** Getter for last reported state. Set to true if "near" is reported. */
-  public boolean sensorReportsNearState() {
-    threadChecker.checkIsOnValidThread();
-    return lastStateReportIsNear;
-  }
-
-  @Override
-  public final void onAccuracyChanged(Sensor sensor, int accuracy) {
-    threadChecker.checkIsOnValidThread();
-    AppRTCUtils.assertIsTrue(sensor.getType() == Sensor.TYPE_PROXIMITY);
-    if (accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
-      Log.e(TAG, "The values returned by this sensor cannot be trusted");
-    }
-  }
-
-  @Override
-  public final void onSensorChanged(SensorEvent event) {
-    threadChecker.checkIsOnValidThread();
-    AppRTCUtils.assertIsTrue(event.sensor.getType() == Sensor.TYPE_PROXIMITY);
-    // As a best practice; do as little as possible within this method and
-    // avoid blocking.
-    float distanceInCentimeters = event.values[0];
-    if (distanceInCentimeters < proximitySensor.getMaximumRange()) {
-      Log.d(TAG, "Proximity sensor => NEAR state");
-      lastStateReportIsNear = true;
-    } else {
-      Log.d(TAG, "Proximity sensor => FAR state");
-      lastStateReportIsNear = false;
+    /**
+     * Construction
+     */
+    static AppRTCProximitySensor create(Context context,
+                                        Runnable sensorStateListener) {
+        rlog.d("距离传感器创建");
+        return new AppRTCProximitySensor(context, sensorStateListener);
     }
 
-    // Report about new state to listening client. Client can then call
-    // sensorReportsNearState() to query the current state (NEAR or FAR).
-    if (onSensorStateListener != null) {
-      onSensorStateListener.run();
+    private AppRTCProximitySensor(Context context, Runnable sensorStateListener) {
+        Log.d(TAG, "AppRTCProximitySensor" + AppRTCUtils.getThreadInfo());
+        onSensorStateListener = sensorStateListener;
+        sensorManager = ((SensorManager) context.getSystemService(
+                Context.SENSOR_SERVICE));
+        rlog.d("获取距离传感器服务");
     }
 
-    Log.d(TAG, "onSensorChanged" + AppRTCUtils.getThreadInfo() + ": "
-        + "accuracy=" + event.accuracy
-        + ", timestamp=" + event.timestamp + ", distance=" + event.values[0]);
-  }
+    /**
+     * Activate the proximity sensor. Also do initialization if called for the
+     * first time.
+     */
+    public boolean start() {
+        rlog.d("距离传感器开始");
+        threadChecker.checkIsOnValidThread();
+        Log.d(TAG, "start" + AppRTCUtils.getThreadInfo());
+        if (!initDefaultSensor()) {
+            // Proximity sensor is not supported on this device.
+            return false;
+        }
+        sensorManager.registerListener(
+                this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        return true;
+    }
 
-  /**
-   * Get default proximity sensor if it exists. Tablet devices (e.g. Nexus 7)
-   * does not support this type of sensor and false will be returned in such
-   * cases.
-   */
-  private boolean initDefaultSensor() {
-    if (proximitySensor != null) {
-      return true;
+    /**
+     * Deactivate the proximity sensor.
+     */
+    public void stop() {
+        rlog.d("距离传感器停止");
+        threadChecker.checkIsOnValidThread();
+        Log.d(TAG, "stop" + AppRTCUtils.getThreadInfo());
+        if (proximitySensor == null) {
+            return;
+        }
+        sensorManager.unregisterListener(this, proximitySensor);
     }
-    proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-    if (proximitySensor == null) {
-      return false;
-    }
-    logProximitySensorInfo();
-    return true;
-  }
 
-  /** Helper method for logging information about the proximity sensor. */
-  private void logProximitySensorInfo() {
-    if (proximitySensor == null) {
-      return;
+    /**
+     * Getter for last reported state. Set to true if "near" is reported.
+     */
+    public boolean sensorReportsNearState() {
+        rlog.d("距离传感器报告接近状态");
+        threadChecker.checkIsOnValidThread();
+        return lastStateReportIsNear;
     }
-    StringBuilder info = new StringBuilder("Proximity sensor: ");
-    info.append("name=").append(proximitySensor.getName());
-    info.append(", vendor: ").append(proximitySensor.getVendor());
-    info.append(", power: ").append(proximitySensor.getPower());
-    info.append(", resolution: ").append(proximitySensor.getResolution());
-    info.append(", max range: ").append(proximitySensor.getMaximumRange());
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-      // Added in API level 9.
-      info.append(", min delay: ").append(proximitySensor.getMinDelay());
+
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy) {
+        rlog.d("距离传感器精度改变");
+        threadChecker.checkIsOnValidThread();
+        AppRTCUtils.assertIsTrue(sensor.getType() == Sensor.TYPE_PROXIMITY);
+        if (accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            Log.e(TAG, "The values returned by this sensor cannot be trusted");
+        }
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-      // Added in API level 20.
-      info.append(", type: ").append(proximitySensor.getStringType());
+
+    @Override
+    public final void onSensorChanged(SensorEvent event) {
+        rlog.d("距离传感器距离改变");
+        threadChecker.checkIsOnValidThread();
+        AppRTCUtils.assertIsTrue(event.sensor.getType() == Sensor.TYPE_PROXIMITY);
+        // As a best practice; do as little as possible within this method and
+        // avoid blocking.
+        float distanceInCentimeters = event.values[0];
+        if (distanceInCentimeters < proximitySensor.getMaximumRange()) {
+            rlog.d("距离传感器近了");
+            Log.d(TAG, "Proximity sensor => NEAR state");
+            lastStateReportIsNear = true;
+        } else {
+            rlog.d("距离传感器远了");
+            Log.d(TAG, "Proximity sensor => FAR state");
+            lastStateReportIsNear = false;
+        }
+
+        // Report about new state to listening client. Client can then call
+        // sensorReportsNearState() to query the current state (NEAR or FAR).
+        if (onSensorStateListener != null) {
+            onSensorStateListener.run();
+        }
+
+        Log.d(TAG, "onSensorChanged" + AppRTCUtils.getThreadInfo() + ": "
+                + "accuracy=" + event.accuracy
+                + ", timestamp=" + event.timestamp + ", distance=" + event.values[0]);
     }
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      // Added in API level 21.
-      info.append(", max delay: ").append(proximitySensor.getMaxDelay());
-      info.append(", reporting mode: ").append(proximitySensor.getReportingMode());
-      info.append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
+
+    /**
+     * Get default proximity sensor if it exists. Tablet devices (e.g. Nexus 7)
+     * does not support this type of sensor and false will be returned in such
+     * cases.
+     */
+    private boolean initDefaultSensor() {
+        rlog.d("默认初始化距离传感器");
+        if (proximitySensor != null) {
+            return true;
+        }
+        proximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        if (proximitySensor == null) {
+            return false;
+        }
+        logProximitySensorInfo();
+        return true;
     }
-    Log.d(TAG, info.toString());
-  }
+
+    /**
+     * Helper method for logging information about the proximity sensor.
+     */
+    private void logProximitySensorInfo() {
+        rlog.d("输出距离传感器信息");
+        if (proximitySensor == null) {
+            return;
+        }
+        StringBuilder info = new StringBuilder("Proximity sensor: ");
+        info.append("name=").append(proximitySensor.getName());
+        info.append(", vendor: ").append(proximitySensor.getVendor());
+        info.append(", power: ").append(proximitySensor.getPower());
+        info.append(", resolution: ").append(proximitySensor.getResolution());
+        info.append(", max range: ").append(proximitySensor.getMaximumRange());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            // Added in API level 9.
+            info.append(", min delay: ").append(proximitySensor.getMinDelay());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            // Added in API level 20.
+            info.append(", type: ").append(proximitySensor.getStringType());
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // Added in API level 21.
+            info.append(", max delay: ").append(proximitySensor.getMaxDelay());
+            info.append(", reporting mode: ").append(proximitySensor.getReportingMode());
+            info.append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
+        }
+        Log.d(TAG, info.toString());
+    }
 
 }
