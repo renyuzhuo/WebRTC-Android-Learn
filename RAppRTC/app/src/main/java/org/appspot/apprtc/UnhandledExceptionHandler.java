@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.channels.OverlappingFileLockException;
 
 import cn.renyuzhuo.rlib.rlog;
 
