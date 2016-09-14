@@ -12,3 +12,7 @@ AutobahnAndroid 是 Android 平台上的 WebSocket & WAMP (WebSocket Application
 - 易用的 API
 - 无缝集成 Android UI 应用
 - UI 线程上无网络 Activity
+
+### 使用
+
+在WebSocketChannelClient中使用。
