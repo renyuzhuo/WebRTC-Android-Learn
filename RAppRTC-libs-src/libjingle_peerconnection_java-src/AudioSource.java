@@ -13,7 +13,6 @@ package org.webrtc;
 /**
  * Java wrapper for a C++ AudioSourceInterface.  Used as the source for one or
  * more {@code AudioTrack} objects.
- * 音频source
  */
 public class AudioSource extends MediaSource {
   public AudioSource(long nativeSource) {

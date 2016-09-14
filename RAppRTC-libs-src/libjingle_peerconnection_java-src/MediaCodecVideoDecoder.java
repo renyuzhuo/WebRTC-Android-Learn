@@ -178,13 +178,8 @@ public class MediaCodecVideoDecoder {
     }
     Logging.d(TAG, "Trying to find HW decoder for mime " + mime);
     for (int i = 0; i < MediaCodecList.getCodecCount(); ++i) {
-      MediaCodecInfo info = null;
-      try {
-        info = MediaCodecList.getCodecInfoAt(i);
-      } catch (IllegalArgumentException e) {
-        Logging.e(TAG,  "Cannot retrieve decoder codec info", e);
-      }
-      if (info == null || info.isEncoder()) {
+      MediaCodecInfo info = MediaCodecList.getCodecInfoAt(i);
+      if (info.isEncoder()) {
         continue;
       }
       String name = null;
@@ -212,13 +207,8 @@ public class MediaCodecVideoDecoder {
       }
 
       // Check if codec supports either yuv420 or nv12.
-      CodecCapabilities capabilities;
-      try {
-        capabilities = info.getCapabilitiesForType(mime);
-      } catch (IllegalArgumentException e) {
-        Logging.e(TAG,  "Cannot retrieve decoder capabilities", e);
-        continue;
-      }
+      CodecCapabilities capabilities =
+          info.getCapabilitiesForType(mime);
       for (int colorFormat : capabilities.colorFormats) {
         Logging.v(TAG, "   Color: 0x" + Integer.toHexString(colorFormat));
       }

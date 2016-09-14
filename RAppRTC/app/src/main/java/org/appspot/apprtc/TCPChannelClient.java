@@ -22,7 +22,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.channels.OverlappingFileLockException;
 import java.util.concurrent.ExecutorService;
 
 import cn.renyuzhuo.rlib.rlog;

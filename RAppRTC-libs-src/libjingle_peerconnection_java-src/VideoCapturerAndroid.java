@@ -204,6 +204,11 @@ public class VideoCapturerAndroid implements
     }
   }
 
+  @Override
+  public List<CaptureFormat> getSupportedFormats() {
+    return Camera1Enumerator.getSupportedFormats(getCurrentCameraId());
+  }
+
   // Returns true if this VideoCapturer is setup to capture video frames to a SurfaceTexture.
   public boolean isCapturingToTexture() {
     return isCapturingToTexture;
@@ -634,10 +639,5 @@ public class VideoCapturerAndroid implements
     cameraStatistics.addFrame();
     frameObserver.onTextureFrameCaptured(captureFormat.width, captureFormat.height, oesTextureId,
         transformMatrix, rotation, timestampNs);
-  }
-
-  @Override
-  public boolean isScreencast() {
-    return false;
   }
 }

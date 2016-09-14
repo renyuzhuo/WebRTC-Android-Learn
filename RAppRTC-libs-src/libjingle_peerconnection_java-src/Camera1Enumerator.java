@@ -38,35 +38,23 @@ public class Camera1Enumerator implements CameraEnumerator {
   // Returns device names that can be used to create a new VideoCapturerAndroid.
   @Override
   public String[] getDeviceNames() {
-    ArrayList<String> namesList = new ArrayList<>();
+    String[] names = new String[android.hardware.Camera.getNumberOfCameras()];
     for (int i = 0; i < android.hardware.Camera.getNumberOfCameras(); ++i) {
-      String name = getDeviceName(i);
-      if (name != null) {
-        namesList.add(name);
-        Logging.d(TAG, "Index: " + i + ". " + name);
-      } else {
-        Logging.e(TAG, "Index: " + i + ". Failed to query camera name.");
-      }
+      names[i] = getDeviceName(i);
     }
-    String[] namesArray = new String[namesList.size()];
-    return namesList.toArray(namesArray);
+    return names;
   }
 
   @Override
   public boolean isFrontFacing(String deviceName) {
     android.hardware.Camera.CameraInfo info = getCameraInfo(getCameraIndex(deviceName));
-    return info != null && info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
+    return info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT;
   }
 
   @Override
   public boolean isBackFacing(String deviceName) {
     android.hardware.Camera.CameraInfo info = getCameraInfo(getCameraIndex(deviceName));
-    return info != null && info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
-  }
-
-  @Override
-  public List<CaptureFormat> getSupportedFormats(String deviceName) {
-    return getSupportedFormats(getCameraIndex(deviceName));
+    return info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK;
   }
 
   @Override
@@ -80,7 +68,7 @@ public class Camera1Enumerator implements CameraEnumerator {
     try {
       android.hardware.Camera.getCameraInfo(index, info);
     } catch (Exception e) {
-      Logging.e(TAG, "getCameraInfo failed on index " + index, e);
+      Logging.e(TAG, "getCameraInfo failed on index " + index,e);
       return null;
     }
     return info;
@@ -175,9 +163,6 @@ public class Camera1Enumerator implements CameraEnumerator {
   // camera can not be used.
   static String getDeviceName(int index) {
     android.hardware.Camera.CameraInfo info = getCameraInfo(index);
-    if (info == null) {
-      return null;
-    }
 
     String facing =
         (info.facing == android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT) ? "front" : "back";
