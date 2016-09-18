@@ -14,7 +14,7 @@ package org.webrtc;
  * 相机枚举
  */
 public interface CameraEnumerator {
-    public String[] getDeviceNames();
+    String[] getDeviceNames();
 
     /**
      * 是否是前置摄像头
@@ -22,7 +22,7 @@ public interface CameraEnumerator {
      * @param deviceName 硬件名称
      * @return 是否
      */
-    public boolean isFrontFacing(String deviceName);
+    boolean isFrontFacing(String deviceName);
 
     /**
      * 是否是后置摄像头
@@ -30,8 +30,8 @@ public interface CameraEnumerator {
      * @param deviceName 硬件名称
      * @return 是否
      */
-    public boolean isBackFacing(String deviceName);
+    boolean isBackFacing(String deviceName);
 
-    public CameraVideoCapturer createCapturer(String deviceName,
-                                              CameraVideoCapturer.CameraEventsHandler eventsHandler);
+    CameraVideoCapturer createCapturer(String deviceName,
+                                       CameraVideoCapturer.CameraEventsHandler eventsHandler);
 }

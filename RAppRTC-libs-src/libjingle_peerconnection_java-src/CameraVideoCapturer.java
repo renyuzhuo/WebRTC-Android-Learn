@@ -20,7 +20,7 @@ public interface CameraVideoCapturer extends VideoCapturer {
      * Camera events handler - can be used to be notifed about camera events. The callbacks are
      * executed from an arbitrary thread.
      */
-    public interface CameraEventsHandler {
+    interface CameraEventsHandler {
         // Camera error handler - invoked when camera can not be opened
         // or any camera exception happens on camera thread.
         void onCameraError(String errorDescription);
@@ -42,7 +42,7 @@ public interface CameraVideoCapturer extends VideoCapturer {
      * Camera switch handler - one of these functions are invoked with the result of switchCamera().
      * The callback may be called on an arbitrary thread.
      */
-    public interface CameraSwitchHandler {
+    interface CameraSwitchHandler {
         // Invoked on success. |isFrontCamera| is true if the new camera is front facing.
         void onCameraSwitchDone(boolean isFrontCamera);
 
@@ -61,7 +61,7 @@ public interface CameraVideoCapturer extends VideoCapturer {
      * on the SurfaceTextureHelper thread passed in the ctor, and should only be operated from that
      * thread.
      */
-    public static class CameraStatistics {
+    class CameraStatistics {
         private final static String TAG = "CameraStatistics";
         private final static int CAMERA_OBSERVER_PERIOD_MS = 2000;
         private final static int CAMERA_FREEZE_REPORT_TIMOUT_MS = 4000;
