@@ -10,50 +10,54 @@
 
 package org.webrtc;
 
-/** Java wrapper for a C++ RtpReceiverInterface. */
+/**
+ * Java wrapper for a C++ RtpReceiverInterface.
+ * <p>
+ * 实时传输，接收
+ */
 public class RtpReceiver {
-  final long nativeRtpReceiver;
+    final long nativeRtpReceiver;
 
-  private MediaStreamTrack cachedTrack;
+    private MediaStreamTrack cachedTrack;
 
-  public RtpReceiver(long nativeRtpReceiver) {
-    this.nativeRtpReceiver = nativeRtpReceiver;
-    long track = nativeGetTrack(nativeRtpReceiver);
-    // We can assume that an RtpReceiver always has an associated track.
-    cachedTrack = new MediaStreamTrack(track);
-  }
+    public RtpReceiver(long nativeRtpReceiver) {
+        this.nativeRtpReceiver = nativeRtpReceiver;
+        long track = nativeGetTrack(nativeRtpReceiver);
+        // We can assume that an RtpReceiver always has an associated track.
+        cachedTrack = new MediaStreamTrack(track);
+    }
 
-  public MediaStreamTrack track() {
-    return cachedTrack;
-  }
+    public MediaStreamTrack track() {
+        return cachedTrack;
+    }
 
-  public boolean setParameters(RtpParameters parameters) {
-    return nativeSetParameters(nativeRtpReceiver, parameters);
-  }
+    public boolean setParameters(RtpParameters parameters) {
+        return nativeSetParameters(nativeRtpReceiver, parameters);
+    }
 
-  public RtpParameters getParameters() {
-    return nativeGetParameters(nativeRtpReceiver);
-  }
+    public RtpParameters getParameters() {
+        return nativeGetParameters(nativeRtpReceiver);
+    }
 
-  public String id() {
-    return nativeId(nativeRtpReceiver);
-  }
+    public String id() {
+        return nativeId(nativeRtpReceiver);
+    }
 
-  public void dispose() {
-    cachedTrack.dispose();
-    free(nativeRtpReceiver);
-  }
+    public void dispose() {
+        cachedTrack.dispose();
+        free(nativeRtpReceiver);
+    }
 
-  // This should increment the reference count of the track.
-  // Will be released in dispose().
-  private static native long nativeGetTrack(long nativeRtpReceiver);
+    // This should increment the reference count of the track.
+    // Will be released in dispose().
+    private static native long nativeGetTrack(long nativeRtpReceiver);
 
-  private static native boolean nativeSetParameters(long nativeRtpReceiver,
-                                                    RtpParameters parameters);
+    private static native boolean nativeSetParameters(long nativeRtpReceiver,
+                                                      RtpParameters parameters);
 
-  private static native RtpParameters nativeGetParameters(long nativeRtpReceiver);
+    private static native RtpParameters nativeGetParameters(long nativeRtpReceiver);
 
-  private static native String nativeId(long nativeRtpReceiver);
+    private static native String nativeId(long nativeRtpReceiver);
 
-  private static native void free(long nativeRtpReceiver);
+    private static native void free(long nativeRtpReceiver);
 };
