@@ -10,8 +10,14 @@
 
 package org.webrtc;
 
-/** Interface for observing Stats reports (see webrtc::StatsObservers). */
+/**
+ * Interface for observing Stats reports (see webrtc::StatsObservers).
+ * <p>
+ * 报告状态
+ */
 public interface StatsObserver {
-  /** Called when the reports are ready.*/
-  public void onComplete(StatsReport[] reports);
+    /**
+     * Called when the reports are ready.
+     */
+    void onComplete(StatsReport[] reports);
 }
