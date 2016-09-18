@@ -1,1 +1,1 @@
-include ':app', ':libjingle_peerconnection_java'
+include ':app'
