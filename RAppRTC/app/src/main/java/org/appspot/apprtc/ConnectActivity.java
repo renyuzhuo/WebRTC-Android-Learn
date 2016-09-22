@@ -12,6 +12,7 @@ package org.appspot.apprtc;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import android.view.inputmethod.EditorInfo;
 import android.webkit.URLUtil;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -36,6 +38,7 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.webrtc.ScreenMainActivity;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -86,6 +89,11 @@ public class ConnectActivity extends Activity {
     private ArrayList<String> roomList;
     private ArrayAdapter<String> adapter;
 
+    // renyuzhuo begin
+    Button startScreen;
+    private static Context context;
+    // renyuzhuo end
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +136,17 @@ public class ConnectActivity extends Activity {
         rlog.d("加载界面");
 
         setContentView(R.layout.activity_connect);
+
+        // renyuzhuo begin
+        context = this;
+        startScreen = (Button) findViewById(R.id.start_screen);
+        startScreen.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ScreenMainActivity.createScreenMainActivity(context);
+            }
+        });
+        // renyuzhuo end
 
         roomEditText = (EditText) findViewById(R.id.room_edittext);
         roomEditText.setOnEditorActionListener(
