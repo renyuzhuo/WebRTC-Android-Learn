@@ -61,7 +61,7 @@
             android:label="@string/app_name"
             android:screenOrientation="fullUser"
             android:theme="@style/CallActivityTheme" />
-        <activity android:name="org.webrtc.ScreenMainActivity" />
+        <activity android:name="org.webrtc.BaseScreenCaptureActivity" />
     </application>
 
 </manifest>

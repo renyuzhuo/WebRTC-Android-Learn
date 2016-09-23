@@ -28,6 +28,7 @@ import android.widget.Toast;
 import org.appspot.apprtc.AppRTCClient.RoomConnectionParameters;
 import org.appspot.apprtc.AppRTCClient.SignalingParameters;
 import org.appspot.apprtc.PeerConnectionClient.PeerConnectionParameters;
+import org.webrtc.BaseScreenCaptureActivity;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
@@ -43,7 +44,7 @@ import cn.renyuzhuo.rlib.rlog;
  * Activity for peer connection call setup, call waiting
  * and call view.
  */
-public class CallActivity extends Activity
+public class CallActivity extends BaseScreenCaptureActivity
         implements AppRTCClient.SignalingEvents,
         PeerConnectionClient.PeerConnectionEvents,
         CallFragment.OnCallEvents {
@@ -156,6 +157,8 @@ public class CallActivity extends Activity
 
         rlog.d();
         rlog.d("进入CallActivity");
+
+        setVideoCapturer(this);
 
         Thread.setDefaultUncaughtExceptionHandler(
                 new UnhandledExceptionHandler(this));

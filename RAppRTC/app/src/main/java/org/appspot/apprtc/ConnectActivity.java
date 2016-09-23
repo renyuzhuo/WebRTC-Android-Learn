@@ -38,7 +38,6 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.webrtc.ScreenMainActivity;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -136,17 +135,6 @@ public class ConnectActivity extends Activity {
         rlog.d("加载界面");
 
         setContentView(R.layout.activity_connect);
-
-        // renyuzhuo begin
-        context = this;
-        startScreen = (Button) findViewById(R.id.start_screen);
-        startScreen.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ScreenMainActivity.createScreenMainActivity(context);
-            }
-        });
-        // renyuzhuo end
 
         roomEditText = (EditText) findViewById(R.id.room_edittext);
         roomEditText.setOnEditorActionListener(

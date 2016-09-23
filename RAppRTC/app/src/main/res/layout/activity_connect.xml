@@ -73,10 +73,4 @@
             android:gravity="center"
             android:text="@string/no_favorites" />
     </FrameLayout>
-
-    <Button
-        android:id="@+id/start_screen"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start Screen" />
 </LinearLayout>
