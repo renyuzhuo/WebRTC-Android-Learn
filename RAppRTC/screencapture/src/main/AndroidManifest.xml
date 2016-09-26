@@ -3,7 +3,7 @@
     package="org.webrtc">
 
     <application>
-        <activity android:name=".BaseScreenCaptureActivity" />
+        <activity android:name=".BaseActivity"></activity>
     </application>
 
 </manifest>

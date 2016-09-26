@@ -15,10 +15,6 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 
-import org.appspot.apprtc.CallActivity;
-
-import java.util.List;
-
 /**
  * Created by renyuzhuo on 16-8-12.
  */
@@ -59,7 +55,7 @@ public class ScreenCapturer implements VideoCapturer, SurfaceTextureHelper.OnTex
         this.surfaceTextureHelper = surfaceTextureHelper;
         this.cameraThreadHandler = surfaceTextureHelper == null ? null : surfaceTextureHelper.getHandler();
 
-        Display display = ((CallActivity) context).getWindowManager().getDefaultDisplay();
+        Display display = ((BaseActivity) context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
@@ -100,10 +96,10 @@ public class ScreenCapturer implements VideoCapturer, SurfaceTextureHelper.OnTex
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startScreenCapture() {
         Log.d("RRR", "startScreenCapturer001");
-        ((CallActivity) context).screenCapturer = this;
+        ((BaseActivity) context).screenCapturer = this;
         mediaProjectionManager = (MediaProjectionManager) (context).getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         Intent intent = mediaProjectionManager.createScreenCaptureIntent();
-        ((CallActivity) context).startActivityForResult(intent, START_SCREEN);
+        ((BaseActivity) context).startActivityForResult(intent, START_SCREEN);
 
 //        ((CallActivity) context).startScreen();
 //        capturerObserver.onCapturerStarted(false);
