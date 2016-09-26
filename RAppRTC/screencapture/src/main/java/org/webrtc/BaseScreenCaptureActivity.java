@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.hardware.display.DisplayManager;
+import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
@@ -15,7 +16,6 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Surface;
-import android.view.SurfaceView;
 
 import cn.renyuzhuo.rlib.rlog;
 
@@ -35,6 +35,10 @@ public class BaseScreenCaptureActivity extends Activity implements VideoCapturer
     private int requestedWidth;
     private int requestedHeight;
     private Handler captureThreadHandler;
+    MediaProjection mediaProjection;
+    private int mResultCode;
+    private Intent mResultData;
+    private VirtualDisplay mVirtualDisplay;
 
     public static VideoCapturer getVideoCapturer() {
         return videoCapturer;
@@ -48,6 +52,8 @@ public class BaseScreenCaptureActivity extends Activity implements VideoCapturer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        videoCapturer = this;
+        mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
 
     /**
@@ -63,32 +69,45 @@ public class BaseScreenCaptureActivity extends Activity implements VideoCapturer
      */
     private void requestUserToRecord() {
         rlog.d("请求用户同意录屏");
-        mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-        Intent intent = mediaProjectionManager.createScreenCaptureIntent();
-        startActivityForResult(intent, CREATE_SCREEN_CAPTURE);
+        if (mediaProjectionManager != null) {
+            startActivityForResult(
+                    mediaProjectionManager.createScreenCaptureIntent(),
+                    CREATE_SCREEN_CAPTURE);
+        } else {
+            rlog.e("mediaProjectionManager == null");
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_USER_TO_RECORD) {
-                rlog.d("用户同意录屏，开始录屏");
-                createScreenCapture(resultCode, data);
+        if (requestCode == REQUEST_USER_TO_RECORD) {
+            if (resultCode != Activity.RESULT_OK) {
+                rlog.e("User cancelled");
+                return;
             }
+            mResultCode = resultCode;
+            mResultData = data;
+            setUpMediaProjection();
+            createScreenCapture();
         }
     }
+    private void setUpMediaProjection() {
+        mediaProjection = mediaProjectionManager.getMediaProjection(mResultCode, mResultData);
+    }
 
-    private void createScreenCapture(int resultCode, Intent data) {
-        MediaProjection mediaProjection = mediaProjectionManager.getMediaProjection(resultCode, data);
+    private void createScreenCapture() {
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int density = metrics.densityDpi;
         int flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR;
 
-        Handler handler = new Handler();
-        mediaProjection.createVirtualDisplay("screencap",
+        mVirtualDisplay = mediaProjection.createVirtualDisplay("ScreenCapture",
                 displayWidth, displayHeight, density,
                 flags, surface, null, captureThreadHandler);
+    }
+
+    private void stopScreenCapture() {
+        mVirtualDisplay.release();
+        mVirtualDisplay = null;
     }
 
     private boolean isInitialized() {
@@ -121,7 +140,6 @@ public class BaseScreenCaptureActivity extends Activity implements VideoCapturer
         captureThreadHandler =
                 surfaceTextureHelper == null ? null : surfaceTextureHelper.getHandler();
 
-
         this.surfaceTextureHelper.startListening(this);
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -145,7 +163,7 @@ public class BaseScreenCaptureActivity extends Activity implements VideoCapturer
 
     @Override
     public void stopCapture() throws InterruptedException {
-
+        stopScreenCapture();
     }
 
     @Override

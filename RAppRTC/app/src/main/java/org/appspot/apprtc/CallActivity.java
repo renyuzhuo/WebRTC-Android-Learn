@@ -10,6 +10,7 @@
 
 package org.appspot.apprtc;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -17,9 +18,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
@@ -34,6 +37,7 @@ import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon.ScalingType;
+import org.webrtc.ScreenCapturer;
 import org.webrtc.SessionDescription;
 import org.webrtc.StatsReport;
 import org.webrtc.SurfaceViewRenderer;
@@ -44,7 +48,7 @@ import cn.renyuzhuo.rlib.rlog;
  * Activity for peer connection call setup, call waiting
  * and call view.
  */
-public class CallActivity extends BaseScreenCaptureActivity
+public class CallActivity extends Activity
         implements AppRTCClient.SignalingEvents,
         PeerConnectionClient.PeerConnectionEvents,
         CallFragment.OnCallEvents {
@@ -158,7 +162,7 @@ public class CallActivity extends BaseScreenCaptureActivity
         rlog.d();
         rlog.d("进入CallActivity");
 
-        setVideoCapturer(this);
+//        setVideoCapturer(this);
 
         Thread.setDefaultUncaughtExceptionHandler(
                 new UnhandledExceptionHandler(this));
@@ -803,5 +807,32 @@ public class CallActivity extends BaseScreenCaptureActivity
     public void onPeerConnectionError(final String description) {
         rlog.d("端到端连接错误");
         reportError(description);
+    }
+
+
+
+
+
+
+
+
+
+    private final int START_SCREEN = 1;
+    public ScreenCapturer screenCapturer;
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == START_SCREEN) {
+            if (resultCode == RESULT_OK) {
+                screenCapturer.startCapturerBegin(resultCode, data);
+            }
+        }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
     }
 }

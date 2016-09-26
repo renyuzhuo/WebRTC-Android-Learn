@@ -37,6 +37,7 @@ import org.webrtc.PeerConnection.IceConnectionState;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RtpParameters;
 import org.webrtc.RtpSender;
+import org.webrtc.ScreenCapturer;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 import org.webrtc.StatsObserver;
@@ -619,9 +620,10 @@ public class PeerConnectionClient {
                 return;
             }
             rlog.d("mediaStream添加videoCapture");
-            mediaStream.addTrack(createVideoTrack(videoCapturer));
+//            mediaStream.addTrack(createVideoTrack(videoCapturer));
         }
 
+        mediaStream.addTrack(createVideoTrack(new ScreenCapturer(context)));
 //        mediaStream.addTrack(createVideoTrack(BaseScreenCaptureActivity.getVideoCapturer()));
 
         rlog.d("mediaStream添加audioCapture");
