@@ -10,14 +10,12 @@
 
 package org.appspot.apprtc;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -804,20 +802,6 @@ public class CallActivity extends BaseActivity
     public void onPeerConnectionError(final String description) {
         rlog.d("端到端连接错误");
         reportError(description);
-    }
-
-
-    private final int START_SCREEN = 1;
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == START_SCREEN) {
-            if (resultCode == RESULT_OK) {
-                screenCapturer.startCapturerBegin(resultCode, data);
-            }
-        }
     }
 
     @Override
