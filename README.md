@@ -1,6 +1,6 @@
 # WebRTC-Android-Learn
 
-Read The Fucking WebRTC Code. 针对Android方向，阅读源代码，添加注释，并适当改写。
+Read The Fucking WebRTC Code. 针对Android方向，阅读源代码，添加注释，并适当改写。master分支稳定，develop分支可能出错但包含更多新特性。
 
 改写部分包括：
 
@@ -12,9 +12,8 @@ Read The Fucking WebRTC Code. 针对Android方向，阅读源代码，添加注�
 
 ## Blog
 
-项目介绍及问题汇总：[Blog](http://blog.renyuzhuo.cn/#/issues/18)
+更多项目介绍及问题汇总见：[Blog](http://blog.renyuzhuo.cn/#/issues/18)
 
 ## License
 
 [MIT](https://github.com/RWebRTC/WebRTC-Android-Learn/blob/master/LICENSE)
-

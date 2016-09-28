@@ -2,23 +2,7 @@
 
 #### 官方编译输出文件
 
-官方编译输出文件，这里列出不同架构输出文件
-
-AppRTCDemo_arm64.apk
-
-    arm64
-
-AppRTCDemo_arm.apk
-
-    arm
-
-AppRTCDemo_x64.apk
-
-    x64
-
-AppRTCDemo_x86.apk
-
-    x86
+官方编译输出文件，未修改过，未添加屏幕录像等新功能。这里包含不同架构输出文件。
 
 #### AndroidStudio编译
 
