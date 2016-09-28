@@ -12,7 +12,7 @@ Read The Fucking WebRTC Code. 针对Android方向，阅读源代码，添加注�
 
 ## Blog
 
-项目介绍及问题汇总：[Blog](https://github.com/RWebRTC/Blog/issues/18)
+项目介绍及问题汇总：[Blog](http://blog.renyuzhuo.cn/#/issues/18)
 
 ## License
 
