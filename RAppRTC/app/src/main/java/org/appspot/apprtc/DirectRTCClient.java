@@ -25,8 +25,6 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import cn.renyuzhuo.rlib.rlog;
-
 /**
  * Implementation of AppRTCClient that uses direct TCP connection as the signaling channel.
  * This eliminates the need for an external server. This class does not support loopback
@@ -64,13 +62,10 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
         NEW, CONNECTED, CLOSED, ERROR
     }
 
-    ;
-
     // All alterations of the room state should be done from inside the looper thread.
     private ConnectionState roomState;
 
     public DirectRTCClient(SignalingEvents events) {
-        rlog.d("直接使用TCP直连");
         this.events = events;
 
         executor = Executors.newSingleThreadExecutor();
@@ -86,7 +81,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
         this.connectionParameters = connectionParameters;
 
         if (connectionParameters.loopback) {
-            rlog.d("自己呼叫自己不可以使用DirectRTCClient");
             reportError("Loopback connections aren't supported by DirectRTCClient.");
         }
 
@@ -103,7 +97,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                rlog.d("断开房间");
                 disconnectFromRoomInternal();
             }
         });
@@ -111,18 +104,16 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     /**
      * Connects to the room.
-     * <p/>
+     * <p>
      * Runs on the looper thread.
      */
     private void connectToRoomInternal() {
-        rlog.d("连接到房间");
         this.roomState = ConnectionState.NEW;
 
         String endpoint = connectionParameters.roomId;
 
         Matcher matcher = IP_PATTERN.matcher(endpoint);
         if (!matcher.matches()) {
-            rlog.d("直连IP地址错误");
             reportError("roomId must match IP_PATTERN for DirectRTCClient.");
             return;
         }
@@ -134,9 +125,7 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
         if (portStr != null) {
             try {
                 port = Integer.parseInt(portStr);
-                rlog.d("端口地址：" + port);
             } catch (NumberFormatException e) {
-                rlog.d("端口错误：" + portStr);
                 reportError("Invalid port number: " + portStr);
                 return;
             }
@@ -145,12 +134,11 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
         }
 
         tcpClient = new TCPChannelClient(executor, this, ip, port);
-        rlog.d("创建TCP连接");
     }
 
     /**
      * Disconnects from the room.
-     * <p/>
+     * <p>
      * Runs on the looper thread.
      */
     private void disconnectFromRoomInternal() {
@@ -161,12 +149,10 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
             tcpClient = null;
         }
         executor.shutdown();
-        rlog.d("断开连接");
     }
 
     @Override
     public void sendOfferSdp(final SessionDescription sdp) {
-        rlog.d("send Offer SDP");
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -184,7 +170,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     @Override
     public void sendAnswerSdp(final SessionDescription sdp) {
-        rlog.d("send Answer SDP");
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -198,7 +183,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     @Override
     public void sendLocalIceCandidate(final IceCandidate candidate) {
-        rlog.d("send Local ICE Candidate");
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -222,7 +206,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
      */
     @Override
     public void sendLocalIceCandidateRemovals(final IceCandidate[] candidates) {
-        rlog.d("send Local ICE Candidate, remove");
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -251,7 +234,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
      */
     @Override
     public void onTCPConnected(boolean isServer) {
-        rlog.d("TCP连接成功");
         if (isServer) {
             roomState = ConnectionState.CONNECTED;
 
@@ -271,7 +253,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     @Override
     public void onTCPMessage(String msg) {
-        rlog.d("接收TCP消息");
         try {
             JSONObject json = new JSONObject(msg);
             String type = json.optString("type");
@@ -316,13 +297,11 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     @Override
     public void onTCPError(String description) {
-        rlog.e(description);
         reportError("TCP connection error: " + description);
     }
 
     @Override
     public void onTCPClose() {
-        rlog.d("TCP关闭");
         events.onChannelClose();
     }
 
@@ -342,7 +321,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
     }
 
     private void sendMessage(final String message) {
-        rlog.d("发送消息");
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -353,7 +331,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     // Put a |key|->|value| mapping in |json|.
     private static void jsonPut(JSONObject json, String key, Object value) {
-        rlog.d("put key and value into json");
         try {
             json.put(key, value);
         } catch (JSONException e) {
@@ -363,7 +340,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     // Converts a Java candidate to a JSONObject.
     private static JSONObject toJsonCandidate(final IceCandidate candidate) {
-        rlog.d("java -> json");
         JSONObject json = new JSONObject();
         jsonPut(json, "label", candidate.sdpMLineIndex);
         jsonPut(json, "id", candidate.sdpMid);
@@ -373,7 +349,6 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
 
     // Converts a JSON candidate to a Java object.
     private static IceCandidate toJavaCandidate(JSONObject json) throws JSONException {
-        rlog.d("json to java");
         return new IceCandidate(json.getString("id"),
                 json.getInt("label"),
                 json.getString("candidate"));

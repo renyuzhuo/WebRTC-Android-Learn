@@ -29,7 +29,7 @@ import java.util.LinkedList;
 
 /**
  * WebSocket client implementation.
- * <p/>
+ * <p>
  * <p>All public methods should be called from a looper executor thread
  * passed in a constructor, otherwise exception will be thrown.
  * All events are dispatched on the same thread.
@@ -59,8 +59,6 @@ public class WebSocketChannelClient {
     public enum WebSocketConnectionState {
         NEW, CONNECTED, REGISTERED, CLOSED, ERROR
     }
-
-    ;
 
     /**
      * Callback interface for messages delivered on WebSocket.

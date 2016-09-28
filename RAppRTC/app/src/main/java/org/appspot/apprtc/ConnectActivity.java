@@ -433,7 +433,7 @@ public class ConnectActivity extends Activity {
                 keyprefTracing, Boolean.valueOf(getString(R.string.pref_tracing_default)));
         rlog.d("追踪描述：tracing");
 
-        // Start AppRTCDemo activity.
+        // Start AppRTCMobile activity.
         Log.d(TAG, "Connecting to room " + roomId + " at URL " + roomUrl);
         rlog.d("创建房间：" + "Connecting to room " + roomId + " at URL " + roomUrl);
         if (validateUrl(roomUrl)) {

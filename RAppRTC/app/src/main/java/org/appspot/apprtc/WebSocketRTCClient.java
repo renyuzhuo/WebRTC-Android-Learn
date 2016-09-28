@@ -47,13 +47,10 @@ public class WebSocketRTCClient implements AppRTCClient,
         NEW, CONNECTED, CLOSED, ERROR
     }
 
-    ;
-
     private enum MessageType {
         MESSAGE, LEAVE
     }
 
-    ;
     private final Handler handler;
     private boolean initiator;
     private SignalingEvents events;
