@@ -18,7 +18,8 @@ import android.view.Surface;
  * Email: rwebrtc@gmail.com
  * <br/>
  */
-public class ScreenCapturer implements VideoCapturer, SurfaceTextureHelper.OnTextureFrameAvailableListener {
+public class ScreenCapturer implements VideoCapturer,
+        SurfaceTextureHelper.OnTextureFrameAvailableListener {
 
     private SurfaceTextureHelper surfaceTextureHelper;
     private Context applicationContext;
@@ -56,7 +57,8 @@ public class ScreenCapturer implements VideoCapturer, SurfaceTextureHelper.OnTex
      * 由JNI层调用的初始化
      */
     @Override
-    public void initialize(SurfaceTextureHelper surfaceTextureHelper, Context applicationContext, CapturerObserver capturerObserver) {
+    public void initialize(SurfaceTextureHelper surfaceTextureHelper, Context applicationContext,
+                           CapturerObserver capturerObserver) {
         if (applicationContext == null) {
             throw new IllegalArgumentException("applicationContext not set.");
         }
@@ -99,7 +101,8 @@ public class ScreenCapturer implements VideoCapturer, SurfaceTextureHelper.OnTex
      */
     private void startScreenCapture() {
         baseActivity.screenCapturer = this;
-        mediaProjectionManager = (MediaProjectionManager) baseActivity.getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        mediaProjectionManager = (MediaProjectionManager) baseActivity.getSystemService(
+                Context.MEDIA_PROJECTION_SERVICE);
         Intent intent = mediaProjectionManager.createScreenCaptureIntent();
         baseActivity.startActivityForResult(intent, START_SCREEN);
     }
@@ -136,12 +139,13 @@ public class ScreenCapturer implements VideoCapturer, SurfaceTextureHelper.OnTex
 
     @Override
     public boolean isScreencast() {
-        return mediaProjectionManager != null;
+        return virtualDisplay != null;
     }
 
     @Override
     public void onTextureFrameAvailable(int oesTextureId, float[] transformMatrix, long timestampNs) {
-        capturerObserver.onTextureFrameCaptured(requestedHeight, requestedWidth, oesTextureId, transformMatrix, 0, timestampNs);
+        capturerObserver.onTextureFrameCaptured(requestedHeight, requestedWidth,
+                oesTextureId, transformMatrix, 0, timestampNs);
     }
 
     /**

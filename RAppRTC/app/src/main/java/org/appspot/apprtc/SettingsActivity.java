@@ -20,6 +20,8 @@ import android.preference.Preference;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.voiceengine.WebRtcAudioUtils;
 
+import cn.renyuzhuo.rlib.rlog;
+
 /**
  * Settings activity for AppRTC.
  */
@@ -53,6 +55,11 @@ public class SettingsActivity extends Activity
     private String keyPrefDisplayHud;
     private String keyPrefTracing;
 
+    private String keyScreenCapture;
+    private String keyCameraCapture;
+    private SharedPreferences screenEnable;
+    private SharedPreferences cameraEnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +89,9 @@ public class SettingsActivity extends Activity
         keyPrefRoomServerUrl = getString(R.string.pref_room_server_url_key);
         keyPrefDisplayHud = getString(R.string.pref_displayhud_key);
         keyPrefTracing = getString(R.string.pref_tracing_key);
+
+        keyScreenCapture = getString(R.string.pref_screen_key);
+        keyCameraCapture = getString(R.string.pref_camera_key);
 
         // Display the fragment as the main content.
         settingsFragment = new SettingsFragment();
@@ -125,6 +135,9 @@ public class SettingsActivity extends Activity
         updateSummary(sharedPreferences, keyPrefRoomServerUrl);
         updateSummaryB(sharedPreferences, keyPrefDisplayHud);
         updateSummaryB(sharedPreferences, keyPrefTracing);
+
+        updateSummaryB(sharedPreferences, keyScreenCapture);
+        updateSummaryB(sharedPreferences, keyCameraCapture);
 
         if (!Camera2Enumerator.isSupported(this)) {
             Preference camera2Preference =
@@ -209,6 +222,12 @@ public class SettingsActivity extends Activity
         }
         if (key.equals(keyprefStartAudioBitrateType)) {
             setAudioBitrateEnable(sharedPreferences);
+        }
+        if (key.equals(keyScreenCapture)) {
+            updateSummaryB(sharedPreferences, keyScreenCapture);
+        }
+        if (key.equals(keyCameraCapture)) {
+            updateSummaryB(sharedPreferences, keyCameraCapture);
         }
     }
 

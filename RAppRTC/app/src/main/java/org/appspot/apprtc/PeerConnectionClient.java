@@ -142,6 +142,9 @@ public class PeerConnectionClient {
     private boolean enableAudio;
     private AudioTrack localAudioTrack;
 
+    public static boolean screenCan;
+    public static boolean cameraCan;
+
     /**
      * Peer connection parameters.
      */
@@ -174,7 +177,7 @@ public class PeerConnectionClient {
                 boolean captureToTexture, int audioStartBitrate, String audioCodec,
                 boolean noAudioProcessing, boolean aecDump, boolean useOpenSLES,
                 boolean disableBuiltInAEC, boolean disableBuiltInAGC, boolean disableBuiltInNS,
-                boolean enableLevelControl) {
+                boolean enableLevelControl, boolean screenCan, boolean cameraCan) {
             rlog.d("初始化，包含很多属性");
             this.videoCallEnabled = videoCallEnabled;
             this.useCamera2 = useCamera2;
@@ -196,6 +199,8 @@ public class PeerConnectionClient {
             this.disableBuiltInAGC = disableBuiltInAGC;
             this.disableBuiltInNS = disableBuiltInNS;
             this.enableLevelControl = enableLevelControl;
+            PeerConnectionClient.screenCan = screenCan;
+            PeerConnectionClient.cameraCan = cameraCan;
         }
     }
 
@@ -620,10 +625,14 @@ public class PeerConnectionClient {
                 return;
             }
             rlog.d("mediaStream添加videoCapture");
-//            mediaStream.addTrack(createVideoTrack(videoCapturer));
+            if (cameraCan) {
+                mediaStream.addTrack(createVideoTrack(videoCapturer));
+            }
         }
 
-        mediaStream.addTrack(createVideoTrack(new ScreenCapturer((BaseActivity) context)));
+        if (screenCan) {
+            mediaStream.addTrack(createVideoTrack(new ScreenCapturer((BaseActivity) context)));
+        }
 
         rlog.d("mediaStream添加audioCapture");
         mediaStream.addTrack(createAudioTrack());
