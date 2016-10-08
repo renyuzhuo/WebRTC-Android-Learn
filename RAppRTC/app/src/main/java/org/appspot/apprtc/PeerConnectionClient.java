@@ -20,7 +20,7 @@ import android.util.Log;
 import org.appspot.apprtc.AppRTCClient.SignalingParameters;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
-import org.webrtc.BaseActivity;
+import org.webrtc.ScreenBaseActivity;
 import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerationAndroid;
@@ -631,7 +631,7 @@ public class PeerConnectionClient {
         }
 
         if (screenCan) {
-            mediaStream.addTrack(createVideoTrack(new ScreenCapturer((BaseActivity) context)));
+            mediaStream.addTrack(createVideoTrack(new ScreenCapturer((ScreenBaseActivity) context)));
         }
 
         rlog.d("mediaStream添加audioCapture");

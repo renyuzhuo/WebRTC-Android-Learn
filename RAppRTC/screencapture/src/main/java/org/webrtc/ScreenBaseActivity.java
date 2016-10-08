@@ -5,11 +5,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 
-public class BaseActivity extends Activity {
+public class ScreenBaseActivity extends Activity {
     public ScreenCapturer screenCapturer;
 
     private final int START_SCREEN = 1;
 
+    /**
+     * 提示用户请求录屏权限
+     */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

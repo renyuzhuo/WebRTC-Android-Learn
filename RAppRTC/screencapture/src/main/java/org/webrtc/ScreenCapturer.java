@@ -14,9 +14,6 @@ import android.view.Surface;
 
 /**
  * Created by renyuzhuo on 16-9-27.
- * <br/>
- * Email: rwebrtc@gmail.com
- * <br/>
  */
 public class ScreenCapturer implements VideoCapturer,
         SurfaceTextureHelper.OnTextureFrameAvailableListener {
@@ -25,7 +22,7 @@ public class ScreenCapturer implements VideoCapturer,
     private Context applicationContext;
     public static CapturerObserver capturerObserver;
 
-    private BaseActivity baseActivity;
+    private ScreenBaseActivity baseActivity;
     public Surface surface;
     private int displayHeight;
     private int displayWidth;
@@ -40,7 +37,7 @@ public class ScreenCapturer implements VideoCapturer,
      *
      * @param baseActivity 继承自BaseActivity的子类
      */
-    public ScreenCapturer(BaseActivity baseActivity) {
+    public ScreenCapturer(ScreenBaseActivity baseActivity) {
         this.baseActivity = baseActivity;
     }
 

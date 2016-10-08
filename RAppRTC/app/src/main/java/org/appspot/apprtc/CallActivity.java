@@ -27,12 +27,12 @@ import android.widget.Toast;
 import org.appspot.apprtc.AppRTCClient.RoomConnectionParameters;
 import org.appspot.apprtc.AppRTCClient.SignalingParameters;
 import org.appspot.apprtc.PeerConnectionClient.PeerConnectionParameters;
-import org.webrtc.BaseActivity;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon.ScalingType;
+import org.webrtc.ScreenBaseActivity;
 import org.webrtc.SessionDescription;
 import org.webrtc.StatsReport;
 import org.webrtc.SurfaceViewRenderer;
@@ -43,7 +43,7 @@ import cn.renyuzhuo.rlib.rlog;
  * Activity for peer connection call setup, call waiting
  * and call view.
  */
-public class CallActivity extends BaseActivity
+public class CallActivity extends ScreenBaseActivity
         implements AppRTCClient.SignalingEvents,
         PeerConnectionClient.PeerConnectionEvents,
         CallFragment.OnCallEvents {
@@ -278,7 +278,7 @@ public class CallActivity extends BaseActivity
                 intent.getBooleanExtra(EXTRA_ENABLE_LEVEL_CONTROL, false),
                 intent.getBooleanExtra(EXTRA_SCREEN_CAN, false),
                 intent.getBooleanExtra(EXTRA_CAMERA_CAN, true)
-                );
+        );
         commandLineRun = intent.getBooleanExtra(EXTRA_CMDLINE, false);
         runTimeMs = intent.getIntExtra(EXTRA_RUNTIME, 0);
         rlog.d("获取intent传递过来的数据");

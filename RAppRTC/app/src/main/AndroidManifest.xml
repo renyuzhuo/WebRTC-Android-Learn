@@ -61,6 +61,6 @@
             android:label="@string/app_name"
             android:screenOrientation="fullUser"
             android:theme="@style/CallActivityTheme" />
-        <activity android:name="org.webrtc.BaseActivity" />
+        <activity android:name="org.webrtc.ScreenBaseActivity" />
     </application>
 </manifest>
