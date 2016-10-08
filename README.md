@@ -4,7 +4,7 @@ Read The Fucking WebRTC Code. 针对Android方向，阅读源代码，添加注�
 
 改写部分包括：
 
-    支持Android端屏幕录像。
+    支持Android端屏幕录像。设置中最下方包含SCREEN CAMERA SETTING，可以选择是录制屏幕还是打开照相机。
 
 ## Code Version
 
