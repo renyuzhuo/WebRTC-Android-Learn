@@ -9,6 +9,7 @@ import android.hardware.display.VirtualDisplay;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 
@@ -112,14 +113,15 @@ public class ScreenCapturer implements VideoCapturer,
      */
     @Override
     public void stopCapture() throws InterruptedException {
+        Log.d("rlog", "关闭连接，关闭屏幕录像");
         if (virtualDisplay == null) {
             return;
         }
-        surfaceTextureHelper.stopListening();
-        capturerObserver.onCapturerStopped();
-        surfaceTexture.release();
         virtualDisplay.release();
         virtualDisplay = null;
+//        capturerObserver.onCapturerStopped();
+//        surfaceTexture.release();
+//        surfaceTextureHelper.stopListening();
     }
 
     @Override

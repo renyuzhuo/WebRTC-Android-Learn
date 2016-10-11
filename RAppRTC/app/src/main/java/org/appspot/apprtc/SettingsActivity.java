@@ -127,7 +127,7 @@ public class SettingsActivity extends Activity
         updateSummaryB(sharedPreferences, keyprefDisableBuiltInAGC);
         updateSummaryB(sharedPreferences, keyprefDisableBuiltInNS);
         updateSummaryB(sharedPreferences, keyprefEnableLevelControl);
-        updateSummaryList(sharedPreferences, keyprefSpeakerphone);
+        updateSummaryList(keyprefSpeakerphone);
 
         updateSummary(sharedPreferences, keyPrefRoomServerUrl);
         updateSummaryB(sharedPreferences, keyPrefDisplayHud);
@@ -211,7 +211,7 @@ public class SettingsActivity extends Activity
                 || key.equals(keyPrefDisplayHud)) {
             updateSummaryB(sharedPreferences, key);
         } else if (key.equals(keyprefSpeakerphone)) {
-            updateSummaryList(sharedPreferences, key);
+            updateSummaryList(key);
         }
         if (key.equals(keyprefMaxVideoBitrateType)) {
             setVideoBitrateEnable(sharedPreferences);
@@ -248,7 +248,7 @@ public class SettingsActivity extends Activity
                 : getString(R.string.pref_value_camera));
     }
 
-    private void updateSummaryList(SharedPreferences sharedPreferences, String key) {
+    private void updateSummaryList(String key) {
         ListPreference updatedPref = (ListPreference) settingsFragment.findPreference(key);
         updatedPref.setSummary(updatedPref.getEntry());
     }

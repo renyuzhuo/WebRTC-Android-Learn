@@ -18,6 +18,7 @@ import org.appspot.apprtc.util.AsyncHttpURLConnection.AsyncHttpEvents;
 
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -25,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.IceCandidate;
 import org.webrtc.SessionDescription;
+
+import cn.renyuzhuo.rlib.rlog;
 
 /**
  * Negotiates signaling for chatting with https://appr.tc "rooms".
@@ -363,6 +366,7 @@ public class WebSocketRTCClient implements AppRTCClient,
     // Helper functions.
     private void reportError(final String errorMessage) {
         Log.e(TAG, errorMessage);
+        Looper.prepare();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -372,6 +376,7 @@ public class WebSocketRTCClient implements AppRTCClient,
                 }
             }
         });
+        Looper.loop();
     }
 
     // Put a |key|->|value| mapping in |json|.

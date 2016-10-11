@@ -343,7 +343,6 @@ public class PeerConnectionClient {
     }
 
     private void createPeerConnectionFactoryInternal(Context context) {
-        Log.d("RRRR", "");
         PeerConnectionFactory.initializeInternalTracer();
         rlog.d("初始化");
         if (peerConnectionParameters.tracing) {
@@ -602,7 +601,14 @@ public class PeerConnectionClient {
 
         mediaStream = factory.createLocalMediaStream("ARDAMS");
         rlog.d("factory创建mediaStream");
-        if (videoCallEnabled) {
+        screenCapture = null;
+        videoCapturer = null;
+        if (screenOrCamera) {
+            // ScreenCapture
+            screenCapture = new ScreenCapturer((ScreenBaseActivity) context);
+            mediaStream.addTrack(createVideoTrack(screenCapture));
+        } else if (videoCallEnabled) {
+            // CameraCapture
             rlog.d("视频打开");
             if (peerConnectionParameters.useCamera2) {
                 if (!peerConnectionParameters.captureToTexture) {
@@ -624,14 +630,7 @@ public class PeerConnectionClient {
                 return;
             }
             rlog.d("mediaStream添加videoCapture");
-            if (!screenOrCamera) {
-                mediaStream.addTrack(createVideoTrack(videoCapturer));
-            }
-        }
-
-        if (screenOrCamera) {
-            screenCapture = new ScreenCapturer((ScreenBaseActivity) context);
-            mediaStream.addTrack(createVideoTrack(screenCapture));
+            mediaStream.addTrack(createVideoTrack(videoCapturer));
         }
 
         rlog.d("mediaStream添加audioCapture");
@@ -685,7 +684,7 @@ public class PeerConnectionClient {
             audioSource = null;
         }
         Log.d(TAG, "Stopping capture.");
-        if (videoCapturer != null && !screenOrCamera) {
+        if (videoCapturer != null) {
             try {
                 videoCapturer.stopCapture();
             } catch (InterruptedException e) {
@@ -696,7 +695,7 @@ public class PeerConnectionClient {
             videoCapturer = null;
         }
         Log.d(TAG, "Closing video source.");
-        if (videoSource != null && screenOrCamera) {
+        if (videoSource != null) {
             videoSource.dispose();
             videoSource = null;
         }
