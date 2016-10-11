@@ -85,8 +85,7 @@ public class ConnectActivity extends Activity {
     private String keyprefRoomServerUrl;
     private String keyprefRoom;
     private String keyprefRoomList;
-    private String keyScreenCapture;
-    private String keyCameraCapture;
+    private String keyScreenOrCameraCapture;
     private ArrayList<String> roomList;
     private ArrayAdapter<String> adapter;
 
@@ -128,8 +127,7 @@ public class ConnectActivity extends Activity {
         keyprefRoomServerUrl = getString(R.string.pref_room_server_url_key);
         keyprefRoom = getString(R.string.pref_room_key);
         keyprefRoomList = getString(R.string.pref_room_list_key);
-        keyScreenCapture = getString(R.string.pref_screen_key);
-        keyCameraCapture = getString(R.string.pref_camera_key);
+        keyScreenOrCameraCapture = getString(R.string.pref_screen_or_camera_key);
 
         rlog.d("加载界面");
 
@@ -432,9 +430,7 @@ public class ConnectActivity extends Activity {
                 keyprefTracing, Boolean.valueOf(getString(R.string.pref_tracing_default)));
         rlog.d("追踪描述：tracing");
 
-        boolean screenCan = sharedPref.getBoolean(keyScreenCapture, Boolean.valueOf(getString(R.string.pref_screen_default)));
-
-        boolean cameraCan = sharedPref.getBoolean(keyCameraCapture, Boolean.valueOf(getString(R.string.pref_camera_default)));
+        boolean screenOrCamera = sharedPref.getBoolean(keyScreenOrCameraCapture, Boolean.valueOf(getString(R.string.pref_screen_or_camera_default)));
 
         // Start AppRTCMobile activity.
         Log.d(TAG, "Connecting to room " + roomId + " at URL " + roomUrl);
@@ -470,8 +466,7 @@ public class ConnectActivity extends Activity {
             intent.putExtra(CallActivity.EXTRA_TRACING, tracing);
             intent.putExtra(CallActivity.EXTRA_CMDLINE, commandLineRun);
             intent.putExtra(CallActivity.EXTRA_RUNTIME, runTimeMs);
-            intent.putExtra(CallActivity.EXTRA_SCREEN_CAN, screenCan);
-            intent.putExtra(CallActivity.EXTRA_CAMERA_CAN, cameraCan);
+            intent.putExtra(CallActivity.EXTRA_SCREEN_OR_CAMERA, screenOrCamera);
 
             rlog.d("将从配置文件中读到的值设置到CallActivity并启动CallActivity");
 

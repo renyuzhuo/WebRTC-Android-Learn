@@ -168,13 +168,11 @@
     <string name="pref_screen_camera_key">ScreenCamera_settings_key</string>
     <string name="pref_screen_camera_title">Screen Camera Setting.</string>
 
-    <string name="pref_screen_key">Screen_preference</string>
-    <string name="pref_screen_title">Screen Capture.</string>
-    <string name="pref_screen_dlg">Screen Capture.</string>
-    <string name="pref_screen_default" translatable="false">false</string>
+    <string name="pref_screen_or_camera_key">Screen_preference</string>
+    <string name="pref_screen_or_camera_title">Screen or Camera Capture.</string>
+    <string name="pref_screen_or_camera_dlg">Screen or Camera Capture.</string>
+    <string name="pref_screen_or_camera_default" translatable="false">false</string>
 
-    <string name="pref_camera_key">Camera_preference</string>
-    <string name="pref_camera_title">Camera Capture.</string>
-    <string name="pref_camera_dlg">Camera Capture.</string>
-    <string name="pref_camera_default" translatable="true">true</string>
+    <string name="pref_value_screen">Screen</string>
+    <string name="pref_value_camera">Camera</string>
 </resources>

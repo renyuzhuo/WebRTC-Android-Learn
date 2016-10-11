@@ -31,6 +31,7 @@ public class ScreenCapturer implements VideoCapturer,
     private int requestedHeight;
     private final int START_SCREEN = 1;
     MediaProjectionManager mediaProjectionManager;
+    private SurfaceTexture surfaceTexture;
 
     /**
      * 创建ScreenCapturer
@@ -76,7 +77,7 @@ public class ScreenCapturer implements VideoCapturer,
         displayWidth = size.x;
         displayHeight = size.y;
 
-        final SurfaceTexture surfaceTexture = surfaceTextureHelper.getSurfaceTexture();
+        surfaceTexture = surfaceTextureHelper.getSurfaceTexture();
         surfaceTexture.setDefaultBufferSize(displayWidth, displayHeight);
         surface = new Surface(surfaceTexture);
     }
@@ -114,6 +115,9 @@ public class ScreenCapturer implements VideoCapturer,
         if (virtualDisplay == null) {
             return;
         }
+        surfaceTextureHelper.stopListening();
+        capturerObserver.onCapturerStopped();
+        surfaceTexture.release();
         virtualDisplay.release();
         virtualDisplay = null;
     }

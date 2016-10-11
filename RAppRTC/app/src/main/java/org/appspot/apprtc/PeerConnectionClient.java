@@ -142,8 +142,8 @@ public class PeerConnectionClient {
     private boolean enableAudio;
     private AudioTrack localAudioTrack;
 
-    public static boolean screenCan;
-    public static boolean cameraCan;
+    private static boolean screenOrCamera;
+    private ScreenCapturer screenCapture;
 
     /**
      * Peer connection parameters.
@@ -177,7 +177,7 @@ public class PeerConnectionClient {
                 boolean captureToTexture, int audioStartBitrate, String audioCodec,
                 boolean noAudioProcessing, boolean aecDump, boolean useOpenSLES,
                 boolean disableBuiltInAEC, boolean disableBuiltInAGC, boolean disableBuiltInNS,
-                boolean enableLevelControl, boolean screenCan, boolean cameraCan) {
+                boolean enableLevelControl, boolean screenOrCamera) {
             rlog.d("初始化，包含很多属性");
             this.videoCallEnabled = videoCallEnabled;
             this.useCamera2 = useCamera2;
@@ -199,8 +199,7 @@ public class PeerConnectionClient {
             this.disableBuiltInAGC = disableBuiltInAGC;
             this.disableBuiltInNS = disableBuiltInNS;
             this.enableLevelControl = enableLevelControl;
-            PeerConnectionClient.screenCan = screenCan;
-            PeerConnectionClient.cameraCan = cameraCan;
+            PeerConnectionClient.screenOrCamera = screenOrCamera;
         }
     }
 
@@ -625,13 +624,14 @@ public class PeerConnectionClient {
                 return;
             }
             rlog.d("mediaStream添加videoCapture");
-            if (cameraCan) {
+            if (!screenOrCamera) {
                 mediaStream.addTrack(createVideoTrack(videoCapturer));
             }
         }
 
-        if (screenCan) {
-            mediaStream.addTrack(createVideoTrack(new ScreenCapturer((ScreenBaseActivity) context)));
+        if (screenOrCamera) {
+            screenCapture = new ScreenCapturer((ScreenBaseActivity) context);
+            mediaStream.addTrack(createVideoTrack(screenCapture));
         }
 
         rlog.d("mediaStream添加audioCapture");
@@ -685,19 +685,31 @@ public class PeerConnectionClient {
             audioSource = null;
         }
         Log.d(TAG, "Stopping capture.");
-        if (videoCapturer != null) {
+        if (videoCapturer != null && !screenOrCamera) {
             try {
                 videoCapturer.stopCapture();
             } catch (InterruptedException e) {
+                e.printStackTrace();
                 throw new RuntimeException(e);
             }
             videoCapturer.dispose();
             videoCapturer = null;
         }
         Log.d(TAG, "Closing video source.");
-        if (videoSource != null) {
+        if (videoSource != null && screenOrCamera) {
             videoSource.dispose();
             videoSource = null;
+        }
+        if (screenCapture != null) {
+            rlog.d();
+            rlog.d("screenCapture != null");
+            try {
+                screenCapture.stopCapture();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            screenCapture.dispose();
+            screenCapture = null;
         }
         Log.d(TAG, "Closing peer connection factory.");
         if (factory != null) {

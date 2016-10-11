@@ -55,10 +55,8 @@ public class SettingsActivity extends Activity
     private String keyPrefDisplayHud;
     private String keyPrefTracing;
 
-    private String keyScreenCapture;
-    private String keyCameraCapture;
-    private SharedPreferences screenEnable;
-    private SharedPreferences cameraEnable;
+    // false -> Camera, true -> Screen
+    private String keyScreenOrCameraCapture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +88,7 @@ public class SettingsActivity extends Activity
         keyPrefDisplayHud = getString(R.string.pref_displayhud_key);
         keyPrefTracing = getString(R.string.pref_tracing_key);
 
-        keyScreenCapture = getString(R.string.pref_screen_key);
-        keyCameraCapture = getString(R.string.pref_camera_key);
+        keyScreenOrCameraCapture = getString(R.string.pref_screen_or_camera_key);
 
         // Display the fragment as the main content.
         settingsFragment = new SettingsFragment();
@@ -136,8 +133,7 @@ public class SettingsActivity extends Activity
         updateSummaryB(sharedPreferences, keyPrefDisplayHud);
         updateSummaryB(sharedPreferences, keyPrefTracing);
 
-        updateSummaryB(sharedPreferences, keyScreenCapture);
-        updateSummaryB(sharedPreferences, keyCameraCapture);
+        updateSummarySC(sharedPreferences, keyScreenOrCameraCapture);
 
         if (!Camera2Enumerator.isSupported(this)) {
             Preference camera2Preference =
@@ -223,12 +219,7 @@ public class SettingsActivity extends Activity
         if (key.equals(keyprefStartAudioBitrateType)) {
             setAudioBitrateEnable(sharedPreferences);
         }
-        if (key.equals(keyScreenCapture)) {
-            updateSummaryB(sharedPreferences, keyScreenCapture);
-        }
-        if (key.equals(keyCameraCapture)) {
-            updateSummaryB(sharedPreferences, keyCameraCapture);
-        }
+        updateSummarySC(sharedPreferences, keyScreenOrCameraCapture);
     }
 
     private void updateSummary(SharedPreferences sharedPreferences, String key) {
@@ -248,6 +239,13 @@ public class SettingsActivity extends Activity
         updatedPref.setSummary(sharedPreferences.getBoolean(key, true)
                 ? getString(R.string.pref_value_enabled)
                 : getString(R.string.pref_value_disabled));
+    }
+
+    private void updateSummarySC(SharedPreferences sharedPreferences, String key) {
+        Preference updatedPref = settingsFragment.findPreference(key);
+        updatedPref.setSummary(sharedPreferences.getBoolean(key, true)
+                ? getString(R.string.pref_value_screen)
+                : getString(R.string.pref_value_camera));
     }
 
     private void updateSummaryList(SharedPreferences sharedPreferences, String key) {

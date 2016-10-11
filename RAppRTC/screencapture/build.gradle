@@ -33,7 +33,7 @@ dependencies {
     compile files('libs/libjingle_peerconnection_java.jar')
     compile files('libs/base_java.jar')
     compile files('libs/autobanh.jar')
-    compile 'cn.renyuzhuo.rlib:rlib:0.0.12@aar'
+    compile 'cn.renyuzhuo.rlib:rlib:0.0.14@aar'
 }
 
 task rtcsc(type: Copy, dependsOn: ['build']) {

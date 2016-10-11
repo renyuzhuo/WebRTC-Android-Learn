@@ -97,10 +97,8 @@ public class CallActivity extends ScreenBaseActivity
             "org.appspot.apprtc.CMDLINE";
     public static final String EXTRA_RUNTIME =
             "org.appspot.apprtc.RUNTIME";
-    public static final String EXTRA_SCREEN_CAN =
-            "org.appspot.apprtc.SCREEN_CAN";
-    public static final String EXTRA_CAMERA_CAN =
-            "org.appspot.apprtc.CAMERA_CAN";
+    public static final String EXTRA_SCREEN_OR_CAMERA =
+            "org.appspot.apprtc.SCREEN_OR_CAMERA";
     private static final String TAG = "CallRTCClient";
 
     // List of mandatory application permissions.
@@ -276,8 +274,7 @@ public class CallActivity extends ScreenBaseActivity
                 intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_AGC, false),
                 intent.getBooleanExtra(EXTRA_DISABLE_BUILT_IN_NS, false),
                 intent.getBooleanExtra(EXTRA_ENABLE_LEVEL_CONTROL, false),
-                intent.getBooleanExtra(EXTRA_SCREEN_CAN, false),
-                intent.getBooleanExtra(EXTRA_CAMERA_CAN, true)
+                intent.getBooleanExtra(EXTRA_SCREEN_OR_CAMERA, false)
         );
         commandLineRun = intent.getBooleanExtra(EXTRA_CMDLINE, false);
         runTimeMs = intent.getIntExtra(EXTRA_RUNTIME, 0);
