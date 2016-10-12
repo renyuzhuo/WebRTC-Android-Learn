@@ -335,8 +335,7 @@ public class CallActivity extends ScreenBaseActivity
             options.networkIgnoreMask = 0;
             peerConnectionClient.setPeerConnectionFactoryOptions(options);
         }
-        peerConnectionClient.createPeerConnectionFactory(
-                CallActivity.this, peerConnectionParameters, CallActivity.this);
+        peerConnectionClient.createPeerConnectionFactory(this, this, peerConnectionParameters, CallActivity.this);
         rlog.d("创建PeerConnectionFactory");
     }
 

@@ -1,5 +1,6 @@
 package org.webrtc;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -23,7 +24,7 @@ public class ScreenCapturer implements VideoCapturer,
     private Context applicationContext;
     public static CapturerObserver capturerObserver;
 
-    private ScreenBaseActivity baseActivity;
+    private Activity baseActivity;
     public Surface surface;
     private int displayHeight;
     private int displayWidth;
@@ -39,7 +40,7 @@ public class ScreenCapturer implements VideoCapturer,
      *
      * @param baseActivity 继承自BaseActivity的子类
      */
-    public ScreenCapturer(ScreenBaseActivity baseActivity) {
+    public ScreenCapturer(Activity baseActivity) {
         this.baseActivity = baseActivity;
     }
 
@@ -99,7 +100,7 @@ public class ScreenCapturer implements VideoCapturer,
      * 向用户询问是够允许屏幕录像
      */
     private void startScreenCapture() {
-        baseActivity.screenCapturer = this;
+        ScreenBase.ScreenBaseHealper.screenCapturer = this;
         mediaProjectionManager = (MediaProjectionManager) baseActivity.getSystemService(
                 Context.MEDIA_PROJECTION_SERVICE);
         Intent intent = mediaProjectionManager.createScreenCaptureIntent();

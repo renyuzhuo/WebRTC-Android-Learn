@@ -11,6 +11,7 @@
 package org.appspot.apprtc;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
@@ -101,6 +102,7 @@ public class PeerConnectionClient {
     private final ScheduledExecutorService executor;
 
     private Context context;
+    private Activity activity;
     private PeerConnectionFactory factory;
     private PeerConnection peerConnection;
     PeerConnectionFactory.Options options = null;
@@ -267,7 +269,7 @@ public class PeerConnectionClient {
     }
 
     public void createPeerConnectionFactory(
-            final Context context,
+            final Context context, final Activity activity,
             final PeerConnectionParameters peerConnectionParameters,
             final PeerConnectionEvents events) {
         rlog.d("PeerConnectionClient入口");
@@ -298,7 +300,7 @@ public class PeerConnectionClient {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                createPeerConnectionFactoryInternal(context);
+                createPeerConnectionFactoryInternal(context, activity);
             }
         });
     }
@@ -342,7 +344,7 @@ public class PeerConnectionClient {
         return videoCallEnabled;
     }
 
-    private void createPeerConnectionFactoryInternal(Context context) {
+    private void createPeerConnectionFactoryInternal(Context context, Activity activity) {
         PeerConnectionFactory.initializeInternalTracer();
         rlog.d("初始化");
         if (peerConnectionParameters.tracing) {
@@ -428,6 +430,7 @@ public class PeerConnectionClient {
             rlog.d("Factory networkIgnoreMask option: " + options.networkIgnoreMask);
         }
         this.context = context;
+        this.activity = activity;
         factory = new PeerConnectionFactory(options);
         Log.d(TAG, "Peer connection factory created.");
         rlog.d("Peer Connection Factory创建成功,调用本地native方法");
@@ -605,7 +608,7 @@ public class PeerConnectionClient {
         videoCapturer = null;
         if (screenOrCamera) {
             // ScreenCapture
-            screenCapturer = new ScreenCapturer((ScreenBaseActivity) context);
+            screenCapturer = new ScreenCapturer(activity);
             mediaStream.addTrack(createVideoTrack(screenCapturer));
         } else if (videoCallEnabled) {
             // CameraCapture

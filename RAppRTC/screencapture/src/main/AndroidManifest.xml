@@ -4,7 +4,6 @@
 
     <application>
         <activity android:name=".ScreenBaseActivity" />
-        <activity android:name=".ScreenBaseFragmentActivity"></activity>
     </application>
 
 </manifest>
