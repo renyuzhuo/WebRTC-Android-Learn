@@ -119,9 +119,6 @@ public class ScreenCapturer implements VideoCapturer,
         }
         virtualDisplay.release();
         virtualDisplay = null;
-//        capturerObserver.onCapturerStopped();
-//        surfaceTexture.release();
-//        surfaceTextureHelper.stopListening();
     }
 
     @Override

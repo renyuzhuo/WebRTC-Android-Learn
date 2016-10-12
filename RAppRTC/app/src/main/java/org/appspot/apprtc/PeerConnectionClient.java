@@ -143,7 +143,7 @@ public class PeerConnectionClient {
     private AudioTrack localAudioTrack;
 
     private static boolean screenOrCamera;
-    private ScreenCapturer screenCapture;
+    private ScreenCapturer screenCapturer;
 
     /**
      * Peer connection parameters.
@@ -601,12 +601,12 @@ public class PeerConnectionClient {
 
         mediaStream = factory.createLocalMediaStream("ARDAMS");
         rlog.d("factory创建mediaStream");
-        screenCapture = null;
+        screenCapturer = null;
         videoCapturer = null;
         if (screenOrCamera) {
             // ScreenCapture
-            screenCapture = new ScreenCapturer((ScreenBaseActivity) context);
-            mediaStream.addTrack(createVideoTrack(screenCapture));
+            screenCapturer = new ScreenCapturer((ScreenBaseActivity) context);
+            mediaStream.addTrack(createVideoTrack(screenCapturer));
         } else if (videoCallEnabled) {
             // CameraCapture
             rlog.d("视频打开");
@@ -699,16 +699,16 @@ public class PeerConnectionClient {
             videoSource.dispose();
             videoSource = null;
         }
-        if (screenCapture != null) {
+        if (screenCapturer != null) {
             rlog.d();
             rlog.d("screenCapture != null");
             try {
-                screenCapture.stopCapture();
+                screenCapturer.stopCapture();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            screenCapture.dispose();
-            screenCapture = null;
+            screenCapturer.dispose();
+            screenCapturer = null;
         }
         Log.d(TAG, "Closing peer connection factory.");
         if (factory != null) {
