@@ -14,32 +14,29 @@ package org.webrtc;
  * 加载类库，日志相关
  */
 public class CallSessionFileRotatingLogSink {
-    static {
-        System.loadLibrary("jingle_peerconnection_so");
+  static {
+    System.loadLibrary("jingle_peerconnection_so");
+  }
+
+  private long nativeSink;
+
+  public static byte[] getLogData(String dirPath) {
+    return nativeGetLogData(dirPath);
+  }
+
+  public CallSessionFileRotatingLogSink(
+      String dirPath, int maxFileSize, Logging.Severity severity) {
+    nativeSink = nativeAddSink(dirPath, maxFileSize, severity.ordinal());
+  }
+
+  public void dispose() {
+    if (nativeSink != 0) {
+      nativeDeleteSink(nativeSink);
+      nativeSink = 0;
     }
+  }
 
-    private long nativeSink;
-
-    public static byte[] getLogData(String dirPath) {
-        return nativeGetLogData(dirPath);
-    }
-
-    public CallSessionFileRotatingLogSink(
-            String dirPath, int maxFileSize, Logging.Severity severity) {
-        nativeSink = nativeAddSink(dirPath, maxFileSize, severity.ordinal());
-    }
-
-    public void dispose() {
-        if (nativeSink != 0) {
-            nativeDeleteSink(nativeSink);
-            nativeSink = 0;
-        }
-    }
-
-    private static native long nativeAddSink(
-            String dirPath, int maxFileSize, int severity);
-
-    private static native void nativeDeleteSink(long nativeSink);
-
-    private static native byte[] nativeGetLogData(String dirPath);
+  private static native long nativeAddSink(String dirPath, int maxFileSize, int severity);
+  private static native void nativeDeleteSink(long nativeSink);
+  private static native byte[] nativeGetLogData(String dirPath);
 }

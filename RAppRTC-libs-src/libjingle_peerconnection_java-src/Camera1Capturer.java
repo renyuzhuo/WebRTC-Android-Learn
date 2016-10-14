@@ -10,20 +10,20 @@
 
 package org.webrtc;
 
-import android.annotation.TargetApi;
+import org.webrtc.CameraEnumerationAndroid.CaptureFormat;
+
 import android.content.Context;
-import android.hardware.camera2.CameraManager;
 
-@TargetApi(21)
-public class Camera2Capturer extends CameraCapturer {
-  private final Context context;
-  private final CameraManager cameraManager;
+import java.util.List;
 
-  public Camera2Capturer(Context context, String cameraName, CameraEventsHandler eventsHandler) {
-    super(cameraName, eventsHandler, new Camera2Enumerator(context));
+public class Camera1Capturer extends CameraCapturer {
+  private final boolean captureToTexture;
 
-    this.context = context;
-    cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+  public Camera1Capturer(
+      String cameraName, CameraEventsHandler eventsHandler, boolean captureToTexture) {
+    super(cameraName, eventsHandler, new Camera1Enumerator(captureToTexture));
+
+    this.captureToTexture = captureToTexture;
   }
 
   @Override
@@ -31,7 +31,8 @@ public class Camera2Capturer extends CameraCapturer {
       CameraSession.Events events, Context applicationContext,
       SurfaceTextureHelper surfaceTextureHelper, String cameraName, int width, int height,
       int framerate) {
-    Camera2Session.create(createSessionCallback, events, applicationContext, cameraManager,
-        surfaceTextureHelper, cameraName, width, height, framerate);
+    Camera1Session.create(createSessionCallback, events, captureToTexture, applicationContext,
+        surfaceTextureHelper, Camera1Enumerator.getCameraIndex(cameraName), width, height,
+        framerate);
   }
 }

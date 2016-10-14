@@ -1283,16 +1283,12 @@ JOW(void, PeerConnectionFactory_nativeInitializeVideoCapturer)
   LOG(LS_INFO) << "PeerConnectionFactory_nativeInitializeVideoCapturer";
   rtc::scoped_refptr<PeerConnectionFactoryInterface> factory(
       factoryFromJava(native_factory));
-  LOG(LS_INFO) << "RRRR1";
   auto proxy_source =
       reinterpret_cast<webrtc::VideoTrackSourceProxy*>(native_source);
-  LOG(LS_INFO) << "RRRR2";
   auto source = reinterpret_cast<webrtc::AndroidVideoTrackSource*>(
       proxy_source->internal());
-  LOG(LS_INFO) << "RRRR3";
   rtc::scoped_refptr<SurfaceTextureHelper> surface_texture_helper =
       source->surface_texture_helper();
-  LOG(LS_INFO) << "RRRR4";
   jni->CallVoidMethod(
       j_video_capturer,
       GetMethodID(jni, FindClass(jni, "org/webrtc/VideoCapturer"), "initialize",
@@ -1302,7 +1298,6 @@ JOW(void, PeerConnectionFactory_nativeInitializeVideoCapturer)
           ? surface_texture_helper->GetJavaSurfaceTextureHelper()
           : nullptr,
       j_application_context, j_frame_observer);
-  LOG(LS_INFO) << "RRRR5";
   CHECK_EXCEPTION(jni) << "error during VideoCapturer.initialize()";
 }
 
@@ -2038,6 +2033,7 @@ JOW(jboolean, MediaStreamTrack_nativeSetEnabled)(
 JOW(void, VideoTrack_nativeAddRenderer)(
     JNIEnv* jni, jclass,
     jlong j_video_track_pointer, jlong j_renderer_pointer) {
+  LOG(LS_INFO) << "VideoTrack::nativeAddRenderer";
   reinterpret_cast<VideoTrackInterface*>(j_video_track_pointer)
       ->AddOrUpdateSink(
           reinterpret_cast<rtc::VideoSinkInterface<cricket::VideoFrame>*>(

@@ -79,9 +79,9 @@ JOW_OBSERVER_METHOD(void, nativeCapturerStopped)
   source->SetState(webrtc::AndroidVideoTrackSource::SourceState::kEnded);
 }
 
-JOW_OBSERVER_METHOD(void, nativeOnOutputFormatRequest)
+JOW(void, VideoSource_nativeAdaptOutputFormat)
 (JNIEnv* jni, jclass, jlong j_source, jint j_width, jint j_height, jint j_fps) {
-  LOG(LS_INFO) << "AndroidVideoTrackSourceObserve_nativeOnOutputFormatRequest";
+  LOG(LS_INFO) << "VideoSource_nativeAdaptOutputFormat";
   webrtc::AndroidVideoTrackSource* source =
       AndroidVideoTrackSourceFromJavaProxy(j_source);
   source->OnOutputFormatRequest(j_width, j_height, j_fps);

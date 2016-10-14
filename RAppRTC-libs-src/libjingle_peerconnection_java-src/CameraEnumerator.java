@@ -10,28 +10,16 @@
 
 package org.webrtc;
 
-/**
- * 相机枚举
- */
+import org.webrtc.CameraEnumerationAndroid.CaptureFormat;
+
+import java.util.List;
+
 public interface CameraEnumerator {
-    String[] getDeviceNames();
+  public String[] getDeviceNames();
+  public boolean isFrontFacing(String deviceName);
+  public boolean isBackFacing(String deviceName);
+  public List<CaptureFormat> getSupportedFormats(String deviceName);
 
-    /**
-     * 是否是前置摄像头
-     *
-     * @param deviceName 硬件名称
-     * @return 是否
-     */
-    boolean isFrontFacing(String deviceName);
-
-    /**
-     * 是否是后置摄像头
-     *
-     * @param deviceName 硬件名称
-     * @return 是否
-     */
-    boolean isBackFacing(String deviceName);
-
-    CameraVideoCapturer createCapturer(String deviceName,
-                                       CameraVideoCapturer.CameraEventsHandler eventsHandler);
+  public CameraVideoCapturer createCapturer(
+      String deviceName, CameraVideoCapturer.CameraEventsHandler eventsHandler);
 }
