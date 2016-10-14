@@ -33,7 +33,7 @@ import cn.renyuzhuo.rlib.rlog;
  */
 public class UnhandledExceptionHandler
         implements Thread.UncaughtExceptionHandler {
-    private static final String TAG = "AppRTCDemoActivity";
+    private static final String TAG = "AppRTCMobileActivity";
     private final Activity activity;
 
     public UnhandledExceptionHandler(final Activity activity) {
