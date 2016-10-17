@@ -11,7 +11,6 @@
 package org.webrtc;
 
 import java.nio.ByteBuffer;
-import android.util.Log;
 
 /** Java wrapper for a C++ DataChannelInterface. */
 public class DataChannel {
@@ -123,9 +122,4 @@ public class DataChannel {
 
   /** Dispose of native resources attached to this channel. */
   public native void dispose();
-
-  public static long flush(){
-    Log.e("rlog", "DataChannel.flush() no nothing");
-    return 0;
-  }
 };

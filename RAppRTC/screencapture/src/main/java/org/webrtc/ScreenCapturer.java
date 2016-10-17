@@ -122,11 +122,6 @@ public class ScreenCapturer implements VideoCapturer,
         virtualDisplay = null;
     }
 
-    @Override
-    public void onOutputFormatRequest(final int width, final int height, final int framerate) {
-        capturerObserver.onOutputFormatRequest(width, height, framerate);
-    }
-
     /**
      * 修改录屏格式
      */

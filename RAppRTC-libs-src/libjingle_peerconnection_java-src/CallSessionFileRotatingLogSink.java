@@ -10,9 +10,6 @@
 
 package org.webrtc;
 
-/**
- * 加载类库，日志相关
- */
 public class CallSessionFileRotatingLogSink {
   static {
     System.loadLibrary("jingle_peerconnection_so");
