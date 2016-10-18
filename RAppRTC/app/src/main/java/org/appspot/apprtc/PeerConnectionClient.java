@@ -508,6 +508,12 @@ public class PeerConnectionClient {
 
   private void createPeerConnectionInternal(EglBase.Context renderEGLContext) {
     if (factory == null || isError) {
+      if(!isError){
+        Log.e(TAG, "isError == false");
+      }
+      if(factory == null){
+        Log.e(TAG, "factory == null");
+      }
       Log.e(TAG, "Peerconnection factory is not created");
       return;
     }
