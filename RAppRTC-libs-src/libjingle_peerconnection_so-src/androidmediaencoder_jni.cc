@@ -29,8 +29,8 @@
 #include "webrtc/base/thread_checker.h"
 #include "webrtc/base/timeutils.h"
 #include "webrtc/common_types.h"
+#include "webrtc/common_video/h264/h264_bitstream_parser.h"
 #include "webrtc/modules/video_coding/include/video_codec_interface.h"
-#include "webrtc/modules/video_coding/utility/h264_bitstream_parser.h"
 #include "webrtc/modules/video_coding/utility/quality_scaler.h"
 #include "webrtc/modules/video_coding/utility/vp8_header_parser.h"
 #include "webrtc/system_wrappers/include/field_trial.h"
@@ -57,9 +57,6 @@ namespace webrtc_jni {
 #define H264_SC_LENGTH 4
 // Maximum allowed NALUs in one output frame.
 #define MAX_NALUS_PERFRAME 32
-// Maximum supported HW video encoder resolution.
-#define MAX_VIDEO_WIDTH 1280
-#define MAX_VIDEO_HEIGHT 1280
 // Maximum supported HW video encoder fps.
 #define MAX_VIDEO_FPS 30
 // Maximum allowed fps value in SetRates() call.
@@ -84,8 +81,8 @@ namespace webrtc_jni {
 
 namespace {
 // Maximum time limit between incoming frames before requesting a key frame.
-const size_t kFrameDiffThresholdMs = 1100;
-const int kMinKeyFrameInterval = 2;
+const size_t kFrameDiffThresholdMs = 350;
+const int kMinKeyFrameInterval = 6;
 }  // namespace
 
 // MediaCodecVideoEncoder is a webrtc::VideoEncoder implementation that uses
@@ -266,8 +263,8 @@ class MediaCodecVideoEncoder : public webrtc::VideoEncoder,
                                            // |input_frame_infos_|.
   // Frame size in bytes fed to MediaCodec.
   int yuv_size_;
-  // True only when between a callback_->Encoded() call return a positive value
-  // and the next Encode() call being ignored.
+  // True only when between a callback_->OnEncodedImage() call return a positive
+  // value and the next Encode() call being ignored.
   bool drop_next_input_frame_;
   // Global references; must be deleted in Release().
   std::vector<jobject> input_buffers_;
@@ -1066,7 +1063,8 @@ bool MediaCodecVideoEncoder::DeliverPendingOutputs(JNIEnv* jni) {
     }
 
     // Callback - return encoded frame.
-    int32_t callback_status = 0;
+    webrtc::EncodedImageCallback::Result callback_result(
+        webrtc::EncodedImageCallback::Result::OK);
     if (callback_) {
       std::unique_ptr<webrtc::EncodedImage> image(
           new webrtc::EncodedImage(payload, payload_size, payload_size));
@@ -1177,7 +1175,7 @@ bool MediaCodecVideoEncoder::DeliverPendingOutputs(JNIEnv* jni) {
         }
       }
 
-      callback_status = callback_->Encoded(*image, &info, &header);
+      callback_result = callback_->OnEncodedImage(*image, &info, &header);
     }
 
     // Return output buffer back to the encoder.
@@ -1211,11 +1209,9 @@ bool MediaCodecVideoEncoder::DeliverPendingOutputs(JNIEnv* jni) {
     current_encoding_time_ms_ += frame_encoding_time_ms;
     LogStatistics(false);
 
-    if (callback_status > 0) {
+    // Errors in callback_result are currently ignored.
+    if (callback_result.drop_next_frame)
       drop_next_input_frame_ = true;
-      // Theoretically could handle callback_status<0 here, but unclear what
-      // that would mean for us.
-    }
   }
   return true;
 }
@@ -1310,8 +1306,7 @@ MediaCodecVideoEncoderFactory::MediaCodecVideoEncoderFactory()
   CHECK_EXCEPTION(jni);
   if (is_vp8_hw_supported) {
     ALOGD << "VP8 HW Encoder supported.";
-    supported_codecs_.push_back(VideoCodec(kVideoCodecVP8, "VP8",
-        MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT, MAX_VIDEO_FPS));
+    supported_codecs_.push_back(cricket::VideoCodec("VP8"));
   }
 
   bool is_vp9_hw_supported = jni->CallStaticBooleanMethod(
@@ -1320,8 +1315,7 @@ MediaCodecVideoEncoderFactory::MediaCodecVideoEncoderFactory()
   CHECK_EXCEPTION(jni);
   if (is_vp9_hw_supported) {
     ALOGD << "VP9 HW Encoder supported.";
-    supported_codecs_.push_back(VideoCodec(kVideoCodecVP9, "VP9",
-        MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT, MAX_VIDEO_FPS));
+    supported_codecs_.push_back(cricket::VideoCodec("VP9"));
   }
 
   bool is_h264_hw_supported = jni->CallStaticBooleanMethod(
@@ -1330,8 +1324,7 @@ MediaCodecVideoEncoderFactory::MediaCodecVideoEncoderFactory()
   CHECK_EXCEPTION(jni);
   if (is_h264_hw_supported) {
     ALOGD << "H.264 HW Encoder supported.";
-    supported_codecs_.push_back(VideoCodec(kVideoCodecH264, "H264",
-        MAX_VIDEO_WIDTH, MAX_VIDEO_HEIGHT, MAX_VIDEO_FPS));
+    supported_codecs_.push_back(cricket::VideoCodec("H264"));
   }
 }
 
@@ -1357,26 +1350,23 @@ void MediaCodecVideoEncoderFactory::SetEGLContext(
 }
 
 webrtc::VideoEncoder* MediaCodecVideoEncoderFactory::CreateVideoEncoder(
-    VideoCodecType type) {
+    const cricket::VideoCodec& codec) {
   if (supported_codecs_.empty()) {
-    ALOGW << "No HW video encoder for type " << (int)type;
+    ALOGW << "No HW video encoder for codec " << codec.name;
     return nullptr;
   }
-  for (std::vector<VideoCodec>::const_iterator it = supported_codecs_.begin();
-         it != supported_codecs_.end(); ++it) {
-    if (it->type == type) {
-      ALOGD << "Create HW video encoder for type " << (int)type <<
-          " (" << it->name << ").";
-      return new MediaCodecVideoEncoder(AttachCurrentThreadIfNeeded(), type,
-                                        egl_context_);
-    }
+  if (IsCodecSupported(supported_codecs_, codec)) {
+    ALOGD << "Create HW video encoder for " << codec.name;
+    const VideoCodecType type = cricket::CodecTypeFromName(codec.name);
+    return new MediaCodecVideoEncoder(AttachCurrentThreadIfNeeded(), type,
+                                      egl_context_);
   }
-  ALOGW << "Can not find HW video encoder for type " << (int)type;
+  ALOGW << "Can not find HW video encoder for type " << codec.name;
   return nullptr;
 }
 
-const std::vector<MediaCodecVideoEncoderFactory::VideoCodec>&
-MediaCodecVideoEncoderFactory::codecs() const {
+const std::vector<cricket::VideoCodec>&
+MediaCodecVideoEncoderFactory::supported_codecs() const {
   return supported_codecs_;
 }
 
