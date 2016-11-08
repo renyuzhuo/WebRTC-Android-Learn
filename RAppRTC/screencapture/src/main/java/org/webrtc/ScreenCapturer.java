@@ -72,11 +72,6 @@ public class ScreenCapturer implements VideoCapturer,
         this.capturerObserver = capturerObserver;
         this.surfaceTextureHelper = surfaceTextureHelper;
 
-        if (baseActivity == null) {
-            Log.d("err", "init the ScreenCapture err");
-            return;
-        }
-
         Display display = baseActivity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);

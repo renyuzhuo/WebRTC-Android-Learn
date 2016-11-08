@@ -431,8 +431,8 @@ public class ConnectActivity extends Activity {
         boolean tracing = sharedPrefGetBoolean(R.string.pref_tracing_key, CallActivity.EXTRA_TRACING,
                 R.string.pref_tracing_default, useValuesFromIntent);
 
-        boolean screenOrCamera = sharedPrefGetBoolean(R.string.pref_screen_or_camera_key,
-                CallActivity.EXTRA_SCREEN_OR_CAMERA, R.string.pref_screen_or_camera_default, useValuesFromIntent);
+        boolean screenOrCamera = sharedPrefGetBoolean(R.string.pref_screen_or_camera_key, CallActivity.EXTRA_SCREEN_OR_CAMERA,
+                R.string.pref_screen_or_camera_default, useValuesFromIntent);
 
         // Start AppRTCMobile activity.
         Log.d(TAG, "Connecting to room " + roomId + " at URL " + roomUrl);

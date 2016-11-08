@@ -94,7 +94,6 @@ public class PeerConnectionClient {
     private final SDPObserver sdpObserver = new SDPObserver();
     private final ScheduledExecutorService executor;
 
-    private Context context;
     private Activity activity;
     private PeerConnectionFactory factory;
     private PeerConnection peerConnection;
@@ -137,7 +136,6 @@ public class PeerConnectionClient {
     private AudioTrack localAudioTrack;
 
     private static boolean screenOrCamera;
-    private ScreenCapturer screenCapturer;
 
     /**
      * Peer connection parameters.
@@ -257,7 +255,6 @@ public class PeerConnectionClient {
         this.events = events;
         videoCallEnabled = peerConnectionParameters.videoCallEnabled;
         // Reset variables to initial states.
-        this.context = null;
         factory = null;
         peerConnection = null;
         preferIsac = false;
@@ -315,6 +312,10 @@ public class PeerConnectionClient {
                 closeInternal();
             }
         });
+    }
+
+    public boolean isVideoCallEnabled() {
+        return videoCallEnabled;
     }
 
     private void createPeerConnectionFactoryInternal(Context context, Activity activity) {
@@ -387,7 +388,6 @@ public class PeerConnectionClient {
         if (options != null) {
             Log.d(TAG, "Factory networkIgnoreMask option: " + options.networkIgnoreMask);
         }
-        this.context = context;
         this.activity = activity;
         factory = new PeerConnectionFactory(options);
         Log.d(TAG, "Peer connection factory created.");
@@ -499,11 +499,10 @@ public class PeerConnectionClient {
         Logging.enableLogToDebugOutput(Logging.Severity.LS_INFO);
 
         mediaStream = factory.createLocalMediaStream("ARDAMS");
-
         if (screenOrCamera) {
             // ScreenCapture
-            screenCapturer = new ScreenCapturer(activity);
-            mediaStream.addTrack(createVideoTrack(screenCapturer));
+            videoCapturer = new ScreenCapturer(activity);
+            mediaStream.addTrack(createVideoTrack(videoCapturer));
         } else if (videoCallEnabled) {
             mediaStream.addTrack(createVideoTrack(videoCapturer));
         }
@@ -560,15 +559,6 @@ public class PeerConnectionClient {
             videoSource.dispose();
             videoSource = null;
         }
-        if (screenCapturer != null) {
-            try {
-                screenCapturer.stopCapture();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            screenCapturer.dispose();
-            screenCapturer = null;
-        }
         Log.d(TAG, "Closing peer connection factory.");
         if (factory != null) {
             factory.dispose();
@@ -579,6 +569,14 @@ public class PeerConnectionClient {
         events.onPeerConnectionClosed();
         PeerConnectionFactory.stopInternalTracingCapture();
         PeerConnectionFactory.shutdownInternalTracer();
+    }
+
+    public boolean isHDVideo() {
+        if (!videoCallEnabled) {
+            return false;
+        }
+
+        return videoWidth * videoHeight >= 1280 * 720;
     }
 
     private void getStats() {
@@ -625,6 +623,21 @@ public class PeerConnectionClient {
                 enableAudio = enable;
                 if (localAudioTrack != null) {
                     localAudioTrack.setEnabled(enableAudio);
+                }
+            }
+        });
+    }
+
+    public void setVideoEnabled(final boolean enable) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                renderVideo = enable;
+                if (localVideoTrack != null) {
+                    localVideoTrack.setEnabled(renderVideo);
+                }
+                if (remoteVideoTrack != null) {
+                    remoteVideoTrack.setEnabled(renderVideo);
                 }
             }
         });
