@@ -11,11 +11,6 @@ Read The Fucking WebRTC Code. 针对Android方向，阅读源代码，添加注�
 
 不得不说，WebRTC项目组太活跃了，每天都有新的提交，本代码为master线代码，不定时更新。commit [c6b4e54](https://chromium.googlesource.com/external/webrtc/+/c6b4e547a89b0628f80e057d27fc2fb89d651f3f). Tue Nov 08 02:35:15 2016.
 
-## Blog
-
-更多项目介绍及问题汇总见：[Blog](http://renyuzhuo.cn/rwebrtc)
-
 ## License
 
-[MIT](http://renyuzhuo.cn/#/issues/37)
-
+[MIT](http://renyuzhuo.cn/MIT)
