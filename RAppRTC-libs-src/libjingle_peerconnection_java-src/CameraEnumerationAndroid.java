@@ -13,14 +13,40 @@ package org.webrtc;
 import static java.lang.Math.abs;
 
 import android.graphics.ImageFormat;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.webrtc.Metrics.Histogram;
 
 @SuppressWarnings("deprecation")
 public class CameraEnumerationAndroid {
   private final static String TAG = "CameraEnumerationAndroid";
+
+  static final ArrayList<Size> COMMON_RESOLUTIONS = new ArrayList<Size>(Arrays.asList(
+      // 0, Unknown resolution
+      new Size(160, 120), // 1, QQVGA
+      new Size(240, 160), // 2, HQVGA
+      new Size(320, 240), // 3, QVGA
+      new Size(400, 240), // 4, WQVGA
+      new Size(480, 320), // 5, HVGA
+      new Size(640, 360), // 6, nHD
+      new Size(640, 480), // 7, VGA
+      new Size(768, 480), // 8, WVGA
+      new Size(854, 480), // 9, FWVGA
+      new Size(800, 600), // 10, SVGA
+      new Size(960, 540), // 11, qHD
+      new Size(960, 640), // 12, DVGA
+      new Size(1024, 576), // 13, WSVGA
+      new Size(1024, 600), // 14, WVSGA
+      new Size(1280, 720), // 15, HD
+      new Size(1280, 1024), // 16, SXGA
+      new Size(1920, 1080), // 17, Full HD
+      new Size(1920, 1440), // 18, Full HD 4:3
+      new Size(2560, 1440), // 19, QHD
+      new Size(3840, 2160) // 20, UHD
+      ));
 
   public static class CaptureFormat {
     // Class to represent a framerate range. The framerate varies because of lightning conditions.
@@ -114,51 +140,6 @@ public class CameraEnumerationAndroid {
     }
   }
 
-  /**
-   * @deprecated
-   * Please use Camera1Enumerator.getDeviceNames() instead.
-   */
-  @Deprecated
-  public static String[] getDeviceNames() {
-    return new Camera1Enumerator().getDeviceNames();
-  }
-
-  /**
-   * @deprecated
-   * Please use Camera1Enumerator.getDeviceNames().length instead.
-   */
-  @Deprecated
-  public static int getDeviceCount() {
-    return new Camera1Enumerator().getDeviceNames().length;
-  }
-
-  /**
-   * @deprecated
-   * Please use Camera1Enumerator.getDeviceNames().get(index) instead.
-   */
-  @Deprecated
-  public static String getDeviceName(int index) {
-    return new Camera1Enumerator().getDeviceName(index);
-  }
-
-  /**
-   * @deprecated
-   * Please use Camera1Enumerator.isFrontFacing(String deviceName) instead.
-   */
-  @Deprecated
-  public static String getNameOfFrontFacingDevice() {
-    return getNameOfDevice(android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
-  }
-
-  /**
-   * @deprecated
-   * Please use Camera1Enumerator.isBackFacing(String deviceName) instead.
-   */
-  @Deprecated
-  public static String getNameOfBackFacingDevice() {
-    return getNameOfDevice(android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
-  }
-
   // Helper class for finding the closest supported format for the two functions below. It creates a
   // comparator based on the difference to some requested parameters, where the element with the
   // minimum difference is the element that is closest to the requested parameters.
@@ -216,18 +197,11 @@ public class CameraEnumerationAndroid {
     });
   }
 
-  private static String getNameOfDevice(int facing) {
-    final android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-    for (int i = 0; i < android.hardware.Camera.getNumberOfCameras(); ++i) {
-      try {
-        android.hardware.Camera.getCameraInfo(i, info);
-        if (info.facing == facing) {
-          return getDeviceName(i);
-        }
-      } catch (Exception e) {
-        Logging.e(TAG, "getCameraInfo() failed on index " + i, e);
-      }
-    }
-    return null;
+  // Helper method for camera classes.
+  static void reportCameraResolution(Histogram histogram, Size resolution) {
+    int index = COMMON_RESOLUTIONS.indexOf(resolution);
+    // 0 is reserved for unknown resolution, so add 1.
+    // indexOf returns -1 for unknown resolutions so it becomes 0 automatically.
+    histogram.addSample(index + 1);
   }
 }

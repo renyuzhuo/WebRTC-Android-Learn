@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RAppRTC.iml" filepath="$PROJECT_DIR$/RAppRTC.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/screencapture/screencapture.iml" filepath="$PROJECT_DIR$/screencapture/screencapture.iml" />
     </modules>
   </component>
 </project>
