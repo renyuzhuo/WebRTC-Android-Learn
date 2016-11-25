@@ -108,6 +108,14 @@ public class SurfaceViewRenderer
     eglRenderer.release();
   }
 
+  public void addFrameListener(EglRenderer.FrameListener listener, float scale) {
+    eglRenderer.addFrameListener(listener, scale);
+  }
+
+  public void removeFrameListener(EglRenderer.FrameListener listener) {
+    eglRenderer.removeFrameListener(listener);
+  }
+
   /**
    * Enables fixed size for the surface. This provides better performance but might be buggy on some
    * devices. By default this is turned off.
@@ -137,6 +145,24 @@ public class SurfaceViewRenderer
       RendererCommon.ScalingType scalingTypeMismatchOrientation) {
     ThreadUtils.checkIsOnMainThread();
     videoLayoutMeasure.setScalingType(scalingTypeMatchOrientation, scalingTypeMismatchOrientation);
+  }
+
+  /**
+   * Limit render framerate.
+   *
+   * @param fps Limit render framerate to this value, or use Float.POSITIVE_INFINITY to disable fps
+   *            reduction.
+   */
+  public void setFpsReduction(float fps) {
+    eglRenderer.setFpsReduction(fps);
+  }
+
+  public void disableFpsReduction() {
+    eglRenderer.disableFpsReduction();
+  }
+
+  public void pauseVideo() {
+    eglRenderer.pauseVideo();
   }
 
   // VideoRenderer.Callbacks interface.

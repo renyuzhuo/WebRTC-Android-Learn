@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 rm -rf *~
 rm -rf */*~
 rm -rf */*/*~
