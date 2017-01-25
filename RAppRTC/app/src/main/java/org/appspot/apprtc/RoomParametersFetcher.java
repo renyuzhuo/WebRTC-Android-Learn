@@ -138,6 +138,19 @@ public class RoomParametersFetcher {
           break;
         }
       }
+	  if (!isTurnPresent) {
+		LinkedList<PeerConnection.IceServer> iceServersOverride =
+			  iceServersFromTurnOverrideJSON(roomJson.getString("turn_server_override"));
+		  isTurnPresent = false;
+		  for (PeerConnection.IceServer server : iceServersOverride) {
+			Log.d(TAG, "IceServer: " + server);
+			//incase stun server is present //you can ignore the stun server if you want
+			if (server.uri.startsWith("turn:") || server.uri.startsWith("stun:")) {
+			  isTurnPresent = true;
+			  break;
+			}
+		  }   
+	  }		  
       // Request TURN servers.
       if (!isTurnPresent) {
         LinkedList<PeerConnection.IceServer> turnServers =
@@ -205,6 +218,25 @@ public class RoomParametersFetcher {
       String url = server.getString("urls");
       String credential = server.has("credential") ? server.getString("credential") : "";
       ret.add(new PeerConnection.IceServer(url, "", credential));
+    }
+    return ret;
+  }
+  
+   // Return the list of ICE servers described by a WebRTCPeerConnection
+  // configuration string.
+  private LinkedList<PeerConnection.IceServer> iceServersFromTurnOverrideJSON(String turnServerOverride)
+   throws JSONException {
+    JSONArray json = new JSONArray(turnServerOverride);
+    LinkedList<PeerConnection.IceServer> ret = new LinkedList<PeerConnection.IceServer>();
+	for(int j = 0; j < json.length(); ++j){
+	  JSONObject server = json.getJSONObject(j);
+      JSONArray urls = server.getJSONArray("urls");
+	  String credential = server.has("credential") ? server.getString("credential") : "";
+	  String username = server.has("username") ? server.getString("username") : "";
+	  for(int i = 0; i < urls.length(); i++){
+		  String url = urls.getString(i);
+		  ret.add(new PeerConnection.IceServer(url, username, credential));
+	  } 
     }
     return ret;
   }
