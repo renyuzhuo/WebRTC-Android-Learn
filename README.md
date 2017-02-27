@@ -1,3 +1,5 @@
+I am sorry to say that I have stopped maintaining this project.
+
 # WebRTC-Android-Learn
 
 Read The Fucking WebRTC Code. 
